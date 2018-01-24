@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.system.dao.UserMapper">
+
+	<resultMap id="BaseResultMap" type="com.ccx.system.model.UserBg">
+	   <id column="id" property="id" jdbcType="BIGINT" />
+	   <result column="login_name" property="loginName" jdbcType="VARCHAR" />
+	   <result column="name" property="name" jdbcType="VARCHAR" />
+	   <result column="password" property="password" jdbcType="VARCHAR" />
+	   <result column="phone" property="phone" jdbcType="VARCHAR" />
+	   <result column="email" property="email" jdbcType="VARCHAR" />
+	   <result column="user_type" property="userType" jdbcType="TINYINT" />
+	   <result column="institution_id" property="institutionId" jdbcType="INTEGER" />
+	   <result column="status" property="status" jdbcType="TINYINT" />
+	   <result column="is_del" property="isDel" jdbcType="TINYINT" />
+	   <result column="creater" property="creater" jdbcType="VARCHAR" />
+	   <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	   <result column="loginNum" property="loginNum" jdbcType="INTEGER" />
+	   <result column="loginTime" property="loginTime" jdbcType="TIMESTAMP" />
+	   <result column="warnFlag" property="warnFlag" jdbcType="INTEGER" />
+	   <result column="warnTime" property="warnTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+    id, login_name, name, password, phone, email, user_type, institution_id, status, is_del, 
+    creater, create_time,loginNum,loginTime,warnFlag,warnTime
+  </sql>
+	
+	<!--一对多role mapp-->
+  <resultMap id="RoleMap" type="com.ccx.system.model.RoleBg" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <!--role column-->
+  <sql id="Role_Column_List" >
+    id, name, description, status, company_id, creater, create_time
+  </sql>
+
+<select id="findAllUserList" parameterType="com.ccx.util.page.Page" resultType="com.ccx.system.model.UserVoBg">
+		SELECT
+		us.id AS id,
+		us.login_name AS loginName,
+		us.NAME AS name,
+		us.phone AS phone,
+		us.email AS email,
+		us.password AS password,
+		us.STATUS AS status,
+		us.institution_id AS institutionId,
+		us.creater AS creater,
+		us.create_time AS createTime,
+		ro.id AS roleId,
+		ro.name AS roleName
+		from abs_user_bg us
+		LEFT JOIN abs_user_role_bg ur ON us.id = ur.user_id
+		LEFT JOIN abs_role_bg ro ON ur.role_id = ro.id
+		where 1=1 and us.is_del = 0
+    	<if test="null!= params.userState and ''!= params.userState and '0000'!= params.userState" > 
+    		and us.STATUS = #{params.userState}
+    	</if>
+    	<if test="null!= params.roleId and ''!= params.roleId and '0000'!= params.roleId " > 
+    		and ro.id = #{params.roleId}
+    	</if>
+    	<if test="null!= params.keyWord and ''!= params.keyWord" > 
+    		and us.NAME like CONCAT('%',#{params.keyWord},'%') 
+    		or  us.login_name like CONCAT('%',#{params.keyWord},'%')
+    	</if>
+  	order by us.create_time desc
+	</select>
+	
+	<!-- 保存新增用户,并返回主键值 -->
+	<insert id="doAddUser" parameterType="com.ccx.system.model.UserBg" useGeneratedKeys="true" keyProperty="id">
+		insert into abs_user_bg (id, login_name, name,
+		password, phone, email,
+		user_type, status,is_del,
+		institution_id,creater ,create_time)
+		values (#{id,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR},
+		#{name,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+		#{email,jdbcType=VARCHAR},
+		#{userType,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},#{isDel,jdbcType=TINYINT},
+		#{institutionId,jdbcType=INTEGER},#{creater,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+	</insert>
+	
+	<insert id="addRoleToUser" parameterType="com.ccx.system.model.UserRoleBg">
+		insert into
+		abs_user_role_bg (id, user_id, role_id
+		)
+		values (#{id,jdbcType=BIGINT},
+		#{userId,jdbcType=BIGINT},
+		#{roleId,jdbcType=BIGINT}
+		)
+	</insert>
+	
+	
+	<!--通过用户id获取用户实体 -->
+	  <select id="getUserVoByUserId" resultType="com.ccx.system.model.UserVoBg" parameterType="java.lang.Long">
+	    SELECT
+			us.id AS id,
+			us.login_name AS loginName,
+			us. NAME AS NAME,
+			us.phone AS phone,
+			us.email AS email,
+			us. PASSWORD AS PASSWORD,
+			us. STATUS AS STATUS,
+			us.institution_id AS companyId,
+			us.user_type AS userType,
+			us.creater AS creater,
+			us.create_time AS createTime,
+			ro.id AS roleId,
+			ro. NAME AS roleName
+		FROM
+			abs_user_bg us
+		LEFT JOIN abs_user_role_bg ur ON us.id = ur.user_id
+		LEFT JOIN abs_role_bg ro ON ur.role_id = ro.id
+		WHERE
+			1 = 1
+		AND us.is_del = 0
+		AND us.id = #{userId,jdbcType=INTEGER}
+		ORDER BY
+			us.create_time desc
+	  </select>
+	
+	<!-- 修改用户信息 -->
+	<update id="updateUser" parameterType="com.ccx.system.model.UserBg">
+		update abs_user_bg
+		<set>
+		<if test="loginName != null">
+				login_name = #{loginName,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="institutionId != null">
+				institution_id = #{institutionId,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=INTEGER},
+			</if>
+			<if test="loginNum != null">
+				loginNum = #{loginNum,jdbcType=INTEGER},
+			</if>
+			<if test="loginTime != null">
+				loginTime = #{loginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="warnFlag != null">
+				warnFlag = #{warnFlag,jdbcType=INTEGER},
+			</if>
+			<if test="warnTime != null">
+				warnTime = #{warnTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<!-- 修改角色信息 -->
+	<update id="updateRoleToUser" parameterType="com.ccx.system.model.UserRoleBg">
+		update abs_user_role_bg
+		set
+		role_id = #{roleId,jdbcType=BIGINT}
+		where user_id = #{userId,jdbcType=BIGINT}
+	</update>
+	
+	<!-- 修改用户密码 -->
+	<update id="updateUserPwd" parameterType="com.ccx.system.model.UserBg">
+		update abs_user_bg
+		<set>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<!-- 锁定用户的状态 -->
+	<update id="lockUser" parameterType="java.lang.Long">
+		update abs_user_bg 
+			set status = 2
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	 <!--根据登录名获取用户-->
+  <select id="getUserByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from abs_user_bg
+    where 1=1 and is_del = 0 and login_name = #{0}
+  </select>
+  
+   <!--根据登录名获取用户-->
+  <select id="getUserListByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from abs_user_bg
+    where 1=1 and is_del = 0 and login_name = #{loginName,jdbcType=VARCHAR}
+  </select>
+  
+  <!--查用户角色list-->
+  <select id="getRoleByUserId" resultMap="RoleMap" parameterType="java.lang.Long">
+    SELECT
+    <include refid="Role_Column_List" />
+    FROM abs_role_bg WHERE id IN (
+      SELECT ur.role_id FROM abs_user_bg u, abs_user_role_bg ur WHERE u.is_del = 0 and u.status = 0 and u.id = ur.user_id AND u.id = #{0} )
+  </select>
+  
+  <!--  获取用户菜单权限  -->  
+<select id="findUserMenuPermission"  resultType="com.ccx.system.model.PermissionBeanBg">
+		SELECT
+			d.ID id,
+			d.MYSELF_ID myselfId,
+			d.PARENT_ID parentId,
+			d.PERMISSION_NAME permission_name,
+			d.TYPE type,
+			d.PATH_URL pathUrl,
+			d.ICON_URL iconUrl,
+			d.STATE state
+		FROM
+			abs_user_role_bg a,
+			abs_role_bg AS b,
+			abs_role_resource_bg AS c,
+			abs_resource_bg AS d
+		WHERE
+			a.role_id = b.id
+		AND b.id = c.role_id
+		AND c.resource_id = d.ID
+		AND d.STATE = 1
+		AND d.TYPE = 1
+		AND b.status = 0
+		AND a.user_id = #{id,jdbcType=BIGINT}
+		ORDER BY
+			d.LEVEL,
+			d.PARENT_ID,
+			d.SEQUENCE_NUM
+</select>
+
+  	<!--  根据用户ID查询功能按钮权限  -->  
+	<select id="findUserFunPermission"  resultType="com.ccx.system.model.PermissionBeanBg">
+		SELECT
+			d.ID id,
+			d.MYSELF_ID myselfId,
+			d.PARENT_ID parentId,
+			d.PERMISSION_NAME permission_name,
+			d.TYPE type,
+			d.PATH_URL pathUrl,
+			d.ICON_URL iconUrl,
+			d.STATE state
+		FROM
+			abs_user_role_bg a,
+			abs_role_bg AS b,
+			abs_role_resource_bg AS c,
+			abs_resource_bg AS d
+		WHERE
+			a.role_id = b.id
+		AND b.id = c.role_id
+		AND c.resource_id = d.ID
+		AND d.STATE = 1
+		AND d.TYPE = 2
+		AND b.status = 0
+		AND a.user_id = #{id,jdbcType=BIGINT}
+		ORDER BY
+			d.LEVEL,
+			d.PARENT_ID,
+			d.SEQUENCE_NUM
+	</select>
+	<!--根据模块获取左侧导航栏 -->
+  <select id="getLeftNavigation"  parameterType="java.util.Map" resultType="com.ccx.system.model.PermissionBeanBg">
+    SELECT
+		a.id,
+		a.MYSELF_ID myselfId,
+		a.PERMISSION_NAME permission_name,
+		a.TYPE type,
+		a.PARENT_ID parentId,
+		a.LEVEL level,
+		a.PATH_URL pathUrl,
+		a.ICON_URL iconUrl,
+		a.SEQUENCE_NUM sequenceNum
+	FROM
+		abs_resource_bg a,
+		abs_role_resource_bg b,
+		abs_user_role_bg c
+	WHERE
+		a.ID = b.resource_id
+	AND b.role_id = c.role_id
+	AND a.STATE = 1
+	AND a.PARENT_ID = #{myselfId,jdbcType=VARCHAR}
+	AND c.user_id = #{userId,jdbcType=BIGINT}
+	ORDER BY a.SEQUENCE_NUM
+  </select>
+
+</mapper>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.index.dao.AbsModelElementMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.index.model.AbsModelElement" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="model_id" property="modelId" jdbcType="INTEGER" />
+    <result column="enterprise_type" property="enterpriseType" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="en_name" property="enName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, name, model_id, enterprise_type, state, en_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from abs_model_element
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from abs_model_element
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ccx.index.model.AbsModelElement" useGeneratedKeys="true" keyProperty="id">
+    insert into abs_model_element (id, code, name, 
+      model_id, enterprise_type, state, 
+      en_name)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{modelId,jdbcType=INTEGER}, #{enterpriseType,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, 
+      #{enName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ccx.index.model.AbsModelElement" >
+    insert into abs_model_element
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="modelId != null" >
+        model_id,
+      </if>
+      <if test="enterpriseType != null" >
+        enterprise_type,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="enName != null" >
+        en_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="modelId != null" >
+        #{modelId,jdbcType=INTEGER},
+      </if>
+      <if test="enterpriseType != null" >
+        #{enterpriseType,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="enName != null" >
+        #{enName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccx.index.model.AbsModelElement" >
+    update abs_model_element
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="modelId != null" >
+        model_id = #{modelId,jdbcType=INTEGER},
+      </if>
+      <if test="enterpriseType != null" >
+        enterprise_type = #{enterpriseType,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="enName != null" >
+        en_name = #{enName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccx.index.model.AbsModelElement" >
+    update abs_model_element
+    set code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      model_id = #{modelId,jdbcType=INTEGER},
+      enterprise_type = #{enterpriseType,jdbcType=INTEGER},
+      state = #{state,jdbcType=INTEGER},
+      en_name = #{enName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--分页list-->
+  <select id="getPageList" resultMap="BaseResultMap" parameterType="com.ccx.util.page.Page" >
+    select
+    <include refid="Base_Column_List" />
+      from abs_model_element
+    <if test="null != params.modelId">
+      WHERE model_id = #{params.modelId,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <!--更新状态-->
+  <update id="UpdateState" >
+    update abs_model_element
+      set state = #{state,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--查模型内的因素编号是否重复-->
+  <select id="checkCode" resultType="java.lang.Integer">
+    SELECT count(id) FROM abs_model_element
+      WHERE model_id = #{modelId, jdbcType=INTEGER} AND code = #{code, jdbcType=VARCHAR}
+  </select>
+  
+  <!--通过行业modelId查找因素id-->
+  <select id="getListByModelId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select <include refid="Base_Column_List" />
+      from abs_model_element
+    where model_id = #{0} and state = 1
+  </select>
+</mapper>

@@ -1,0 +1,1465 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.custom.dao.CustomManageMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.custom.model.Institution" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="organization_nature" property="organizationNature" jdbcType="VARCHAR" />
+    <result column="organization_code_flag" property="organizationCodeFlag" jdbcType="TINYINT" />
+    <result column="organization_code" property="organizationCode" jdbcType="VARCHAR" />
+    <result column="organization_scale" property="organizationScale" jdbcType="VARCHAR" />
+    <result column="industry_first" property="industryFirst" jdbcType="VARCHAR" />
+    <result column="industry_second" property="industrySecond" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="office_address" property="officeAddress" jdbcType="VARCHAR" />
+    <result column="foundtime" property="foundtime" jdbcType="DATE" />
+    <result column="legal_name" property="legalName" jdbcType="VARCHAR" />
+    <result column="office_phone_areacode" property="officePhoneAreacode" jdbcType="VARCHAR" />
+    <result column="office_phone" property="officePhone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="fax" property="fax" jdbcType="VARCHAR" />
+    <result column="web_site" property="webSite" jdbcType="VARCHAR" />
+    <result column="contact_name" property="contactName" jdbcType="VARCHAR" />
+    <result column="contact_dep" property="contactDep" jdbcType="VARCHAR" />
+    <result column="contact_job" property="contactJob" jdbcType="VARCHAR" />
+    <result column="contact_phone_areacode" property="contactPhoneAreacode" jdbcType="VARCHAR" />
+    <result column="contact_phone" property="contactPhone" jdbcType="VARCHAR" />
+    <result column="contact_phone_num" property="contactPhoneNum" jdbcType="VARCHAR" />
+    <result column="contact_email" property="contactEmail" jdbcType="VARCHAR" />
+    <result column="contact_wechat" property="contactWechat" jdbcType="VARCHAR" />
+    <result column="contact_qq" property="contactQQ" jdbcType="VARCHAR" />
+    <result column="examine_reason" property="examineReason" jdbcType="VARCHAR" />
+    <result column="examinestate" property="examinestate" jdbcType="TINYINT" />
+    <result column="state" property="state" jdbcType="TINYINT" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modifytime" property="modifytime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     id, name, organization_nature, organization_code_flag, organization_code, organization_scale, 
+    industry_first, industry_second, address, office_address, foundtime, legal_name, 
+    office_phone_areacode, office_phone, email, fax, web_site, contact_name, contact_dep, 
+    contact_job, contact_phone_areacode, contact_phone, contact_phone_num, contact_email, 
+    contact_wechat, contact_qq, examine_reason, examinestate, state, creater, createtime, 
+    modifier, modifytime
+  </sql>
+  
+  <resultMap id="BaseModuleResultMap" type="com.ccx.custom.model.Module" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="institution_id" property="institutionId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="myself_id" property="myselfId" jdbcType="VARCHAR" />
+    <result column="start_date" property="startDate" jdbcType="DATE" />
+    <result column="end_date" property="endDate" jdbcType="DATE" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="allor" property="allor" jdbcType="VARCHAR" />
+    <result column="allor_time" property="allorTime" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="TINYINT" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Module_Column_List" >
+    id, institution_id, name, myself_id, start_date, end_date, description, allor, allor_time, 
+    state, is_del, creater, create_time
+  </sql>
+  
+  <resultMap id="RoleResultMap" type="com.ccx.custom.model.RoleFg" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Role_Column_List" >
+    id, name, description, status, company_id, creater, create_time
+  </sql>
+  
+  <resultMap id="UserNumResultMap" type="com.ccx.custom.model.UserNumBean" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="institution_id" property="institutionId" jdbcType="INTEGER" />
+    <result column="limitNum" property="limitNum" jdbcType="INTEGER" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="UserNum_Column_List" >
+    id, institution_id, limitNum, creater, create_time
+  </sql>
+  
+  <resultMap id="UserFgResultMap" type="com.ccx.custom.model.UserFg" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="login_name" property="loginName" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="user_type" property="userType" jdbcType="TINYINT" />
+    <result column="institution_id" property="institutionId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="loginNum" property="loginNum" jdbcType="INTEGER" />
+    <result column="loginTime" property="loginTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="UserFg_Column_List" >
+    id, login_name, name, password, phone, email, user_type, institution_id, status, 
+    is_del, creater, create_time,loginNum,loginTime
+  </sql>
+  
+  
+  <select id="findAllIns" parameterType="com.ccx.util.page.Page" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from abs_institution
+    where 1=1 and state=1 
+   	<if test=" null!=params.keyWord and ''!=params.keyWord" >
+  	     and 
+  	     ( 
+  	     		name like CONCAT('%',#{params.keyWord},'%')
+		 	or  creater like CONCAT('%',#{params.keyWord},'%')
+		  )
+  	</if> 
+  	<if test=" null!=params.examinestate and ''!=params.examinestate" >
+  	     and examinestate = #{params.examinestate}
+  	</if> 
+  	ORDER BY createtime DESC
+  </select>
+  
+  <!-- 查询需要导出的机构列表 -->
+  <select id="findAllExportIns" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from abs_institution
+    where 1=1 and state=1
+  	ORDER BY createtime DESC
+  </select>
+  
+   <!--查机构list-->
+  <select id="getInstitutionByName" resultMap="BaseResultMap" parameterType="string">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM abs_institution WHERE 1=1 and state=1 and name = #{0}
+  </select>
+  
+   <!--查机构list-->
+  <select id="checkInsOrganizationCode" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM abs_institution WHERE 1=1 and state=1
+    <if test="null!= organizationCodeFlag and ''!= organizationCodeFlag " > 
+   		and organization_code_flag = #{organizationCodeFlag}
+   	</if>
+   	<if test="null!= organizationCode and ''!= organizationCode " > 
+   		and organization_code = #{organizationCode}
+   	</if>
+  </select>
+  
+   <!--根据机构id查询机构实体-->
+  <select id="selectInstitutionById" resultMap="BaseResultMap" parameterType="long">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM abs_institution WHERE 1=1 and state=1 and id = #{0}
+  </select>
+  
+  
+  <insert id="saveCsutomAdd" parameterType="com.ccx.custom.model.Institution" >
+    insert into abs_institution
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="organizationNature != null" >
+        organization_nature,
+      </if>
+      <if test="organizationCodeFlag != null" >
+        organization_code_flag,
+      </if>
+      <if test="organizationCode != null" >
+        organization_code,
+      </if>
+      <if test="organizationScale != null" >
+        organization_scale,
+      </if>
+      <if test="industryFirst != null" >
+        industry_first,
+      </if>
+      <if test="industrySecond != null" >
+        industry_second,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="officeAddress != null" >
+        office_address,
+      </if>
+      <if test="foundtime != null" >
+        foundtime,
+      </if>
+      <if test="legalName != null" >
+        legal_name,
+      </if>
+      <if test="officePhoneAreacode != null" >
+        office_phone_areacode,
+      </if>
+      <if test="officePhone != null" >
+        office_phone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="fax != null" >
+        fax,
+      </if>
+      <if test="webSite != null" >
+        web_site,
+      </if>
+      <if test="contactName != null" >
+        contact_name,
+      </if>
+      <if test="contactDep != null" >
+        contact_dep,
+      </if>
+      <if test="contactJob != null" >
+        contact_job,
+      </if>
+      <if test="contactPhoneAreacode != null" >
+        contact_phone_areacode,
+      </if>
+      <if test="contactPhone != null" >
+        contact_phone,
+      </if>
+      <if test="contactPhoneNum != null" >
+        contact_phone_num,
+      </if>
+      <if test="contactEmail != null" >
+        contact_email,
+      </if>
+      <if test="contactWechat != null" >
+        contact_wechat,
+      </if>
+      <if test="contactQQ != null" >
+        contact_qq,
+      </if>
+      <if test="examineReason != null" >
+        examine_reason,
+      </if>
+      <if test="examinestate != null" >
+        examinestate,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="creater != null" >
+        creater,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="modifytime != null" >
+        modifytime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationNature != null" >
+        #{organizationNature,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationCodeFlag != null" >
+        #{organizationCodeFlag,jdbcType=TINYINT},
+      </if>
+      <if test="organizationCode != null" >
+        #{organizationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationScale != null" >
+        #{organizationScale,jdbcType=VARCHAR},
+      </if>
+      <if test="industryFirst != null" >
+        #{industryFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="industrySecond != null" >
+        #{industrySecond,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="officeAddress != null" >
+        #{officeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="foundtime != null" >
+        #{foundtime,jdbcType=DATE},
+      </if>
+      <if test="legalName != null" >
+        #{legalName,jdbcType=VARCHAR},
+      </if>
+      <if test="officePhoneAreacode != null" >
+        #{officePhoneAreacode,jdbcType=VARCHAR},
+      </if>
+      <if test="officePhone != null" >
+        #{officePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="webSite != null" >
+        #{webSite,jdbcType=VARCHAR},
+      </if>
+      <if test="contactName != null" >
+        #{contactName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactDep != null" >
+        #{contactDep,jdbcType=VARCHAR},
+      </if>
+      <if test="contactJob != null" >
+        #{contactJob,jdbcType=VARCHAR},
+      </if>
+      <if test="contactPhoneAreacode != null" >
+        #{contactPhoneAreacode,jdbcType=VARCHAR},
+      </if>
+      <if test="contactPhone != null" >
+        #{contactPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="contactPhoneNum != null" >
+        #{contactPhoneNum,jdbcType=VARCHAR},
+      </if>
+      <if test="contactEmail != null" >
+        #{contactEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="contactWechat != null" >
+        #{contactWechat,jdbcType=VARCHAR},
+      </if>
+      <if test="contactQQ != null" >
+        #{contactQQ,jdbcType=VARCHAR},
+      </if>
+      <if test="examineReason != null" >
+        #{examineReason,jdbcType=VARCHAR},
+      </if>
+      <if test="examinestate != null" >
+        #{examinestate,jdbcType=TINYINT},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
+      </if>
+      <if test="creater != null" >
+        #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifytime != null" >
+        #{modifytime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+   <update id="saveCsutomEdit" parameterType="com.ccx.custom.model.Institution" >
+	    update abs_institution
+	    <set >
+	      <if test="name != null" >
+	        name = #{name,jdbcType=VARCHAR},
+	      </if>
+	      <if test="organizationNature != null" >
+	        organization_nature = #{organizationNature,jdbcType=VARCHAR},
+	      </if>
+	      <if test="organizationCodeFlag != null" >
+	        organization_code_flag = #{organizationCodeFlag,jdbcType=TINYINT},
+	      </if>
+	      <if test="organizationCode != null" >
+	        organization_code = #{organizationCode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="organizationScale != null" >
+	        organization_scale = #{organizationScale,jdbcType=VARCHAR},
+	      </if>
+	      <if test="industryFirst != null" >
+	        industry_first = #{industryFirst,jdbcType=VARCHAR},
+	      </if>
+	      <if test="industrySecond != null" >
+	        industry_second = #{industrySecond,jdbcType=VARCHAR},
+	      </if>
+	      <if test="address != null" >
+	        address = #{address,jdbcType=VARCHAR},
+	      </if>
+	      <if test="officeAddress != null" >
+	        office_address = #{officeAddress,jdbcType=VARCHAR},
+	      </if>
+	      <if test="foundtime != null" >
+	        foundtime = #{foundtime,jdbcType=DATE},
+	      </if>
+	      <if test="legalName != null" >
+	        legal_name = #{legalName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="officePhoneAreacode != null" >
+	        office_phone_areacode = #{officePhoneAreacode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="officePhone != null" >
+	        office_phone = #{officePhone,jdbcType=VARCHAR},
+	      </if>
+	      <if test="email != null" >
+	        email = #{email,jdbcType=VARCHAR},
+	      </if>
+	      <if test="fax != null" >
+	        fax = #{fax,jdbcType=VARCHAR},
+	      </if>
+	      <if test="webSite != null" >
+	        web_site = #{webSite,jdbcType=VARCHAR},
+	      </if>
+	      <if test="contactName != null" >
+	        contact_name = #{contactName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="contactDep != null" >
+	        contact_dep = #{contactDep,jdbcType=VARCHAR},
+	      </if>
+	      <if test="contactJob != null" >
+	        contact_job = #{contactJob,jdbcType=VARCHAR},
+	      </if>
+	      <if test="contactPhoneAreacode != null" >
+	        contact_phone_areacode = #{contactPhoneAreacode,jdbcType=VARCHAR},
+	      </if>
+	      <if test="contactPhone != null" >
+	        contact_phone = #{contactPhone,jdbcType=VARCHAR},
+	      </if>
+	      <if test="contactPhoneNum != null" >
+	        contact_phone_num = #{contactPhoneNum,jdbcType=VARCHAR},
+	      </if>
+	      <if test="contactEmail != null" >
+	        contact_email = #{contactEmail,jdbcType=VARCHAR},
+	      </if>
+	      <if test="contactWechat != null" >
+	        contact_wechat = #{contactWechat,jdbcType=VARCHAR},
+	      </if>
+	      <if test="contactQQ != null" >
+	        contact_qq = #{contactQQ,jdbcType=VARCHAR},
+	      </if>
+	      <if test="examineReason != null" >
+	        examine_reason = #{examineReason,jdbcType=VARCHAR},
+	      </if>
+	      <if test="examinestate != null" >
+	        examinestate = #{examinestate,jdbcType=TINYINT},
+	      </if>
+	      <if test="state != null" >
+	        state = #{state,jdbcType=TINYINT},
+	      </if>
+	      <if test="creater != null" >
+	        creater = #{creater,jdbcType=VARCHAR},
+	      </if>
+	      <if test="createtime != null" >
+	        createtime = #{createtime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="modifier != null" >
+	        modifier = #{modifier,jdbcType=VARCHAR},
+	      </if>
+	      <if test="modifytime != null" >
+	        modifytime = #{modifytime,jdbcType=TIMESTAMP},
+	      </if>
+	    </set>
+	    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="csutomExamine" parameterType="com.ccx.custom.model.Institution" >
+    update abs_institution
+    <set >
+     <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+     <if test="examineReason != null" >
+        examine_reason = #{examineReason,jdbcType=VARCHAR},
+      </if>
+      <if test="examinestate != null" >
+        examinestate = #{examinestate,jdbcType=INTEGER},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifytime != null" >
+        modifytime = #{modifytime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!--查机构模块list-->
+  <select id="getModuleByInsId" resultMap="BaseModuleResultMap" parameterType="java.lang.Long">
+    SELECT
+    <include refid="Module_Column_List" />
+    FROM abs_module WHERE 1=1 and is_del=0 and institution_id = #{0} ORDER BY myself_id
+  </select>
+  
+   <!--查机构模块list(分页)-->
+  <select id="getModuleListByInsId" resultMap="BaseModuleResultMap" parameterType="com.ccx.util.page.Page">
+    SELECT
+    <include refid="Module_Column_List" />
+    FROM abs_module WHERE 1=1 and is_del=0 
+    <if test=" null!=params.insId and ''!=params.insId" >
+  	     and institution_id = #{params.insId}
+  	</if> 
+  	order by create_time
+  </select>
+  
+  <!--查询所有模块，并且附带该机构模块信息-->
+  <select id="getAllModuleList" resultMap="BaseModuleResultMap" parameterType="com.ccx.util.page.Page">
+    SELECT
+		a.myselfId myself_id,
+		a. NAME NAME,
+		am.id,
+		am.institution_id,
+		am.start_date,
+		am.end_date,
+		am.description,
+		am.allor,
+		am.allor_time,
+		am.state,
+		am.is_del,
+		am.creater,
+		am.create_time
+	FROM
+		(
+			SELECT
+				MYSELF_ID myselfId,
+				PERMISSION_NAME NAME,
+				SEQUENCE_NUM
+			FROM
+				abs_resource_fg
+			WHERE
+				1 = 1
+			AND state = 1
+			AND LEVEL = 1
+		) a
+	LEFT JOIN abs_module am ON a.myselfId = am.myself_id
+	<if test=" null!=params.insId and ''!=params.insId" >
+  	     AND am.institution_id = #{params.insId}
+  	</if>
+	ORDER BY
+		a.SEQUENCE_NUM
+  </select>
+  
+  <!--查查询机构所拥有的模块-->
+  <select id="getMyModuleByInsId" resultMap="BaseModuleResultMap" parameterType="java.lang.Long">
+    SELECT
+    <include refid="Module_Column_List" />
+    FROM abs_module WHERE 1=1 and is_del=0 
+  	and institution_id = #{insId }
+  	order by create_time
+  </select>
+  
+   <!--查机构模块list(分页)-->
+  <!-- <select id="getModuleListByInsId" resultMap="BaseModuleResultMap" parameterType="com.ccx.util.page.Page">
+    SELECT
+		a.MYSELF_ID,
+		a.PERMISSION_NAME,
+		b.id,
+		b.institution_id,
+		b.start_date,
+		b.end_date,
+		b.description,
+		b.allor,
+		b.allor_time,
+		b.state,
+		b.is_del,
+		b.creater,
+		b.create_time
+	FROM
+		abs_resource_fg a
+	LEFT JOIN (
+		SELECT
+			*
+		FROM
+			abs_module
+		WHERE
+			is_del = 0
+			<if test=" null!=params.insId and ''!=params.insId" >
+		  	     and institution_id = #{params.insId}
+		  	</if> 
+	) b ON a.MYSELF_ID = b.MYSELF_ID
+	WHERE
+		1 = 1
+	AND a.state = 1
+	AND a. LEVEL = 1
+	ORDER BY b.create_time desc
+  </select> -->
+  
+  
+   <!--查所有模块-->
+  <select id="getAllModule" resultMap="BaseModuleResultMap" >
+    SELECT
+    	MYSELF_ID myselfId,
+    	PERMISSION_NAME name
+    FROM abs_resource_fg WHERE 1=1 and state=1 and LEVEL=1 ORDER BY SEQUENCE_NUM
+  </select>
+  
+  <!-- 保存新增 -->
+  <insert id="saveModuleAdd" parameterType="java.util.List" >
+     insert into abs_module
+     	(
+	      id, 
+	      institution_id, 
+	      name, 
+	      myself_id, 
+	      start_date, 
+	      end_date, 
+	      description, 
+	      allor, 
+	      allor_time, 
+	      state, 
+	      is_del, 
+	      creater, 
+	      create_time
+      	) values
+      <foreach collection ="list" item="item" index= "index" separator =",">
+          (
+          #{item.id}, 
+          #{item.institutionId},
+          #{item.name},
+          #{item.myselfId},
+          #{item.startDate}, 
+          #{item.endDate},
+          #{item.description},
+          #{item.allor},
+          #{item.allorTime},
+          #{item.state},
+          #{item.isDel},
+          #{item.creater},
+          #{item.createTime}
+          )
+      </foreach >
+  </insert>
+  
+   <!-- 保存新增模块 -->
+  <insert id="saveNewModuleAdd" parameterType="com.ccx.custom.model.Module" >
+    insert into abs_module
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="institutionId != null" >
+        institution_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+       <if test="myselfId != null" >
+        myself_id,
+      </if>
+      <if test="startDate != null" >
+        start_date,
+      </if>
+      <if test="endDate != null" >
+        end_date,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="allor != null" >
+        allor,
+      </if>
+      <if test="allorTime != null" >
+        allor_time,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+      <if test="creater != null" >
+        creater,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="institutionId != null" >
+        #{institutionId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="myselfId != null" >
+        #{myselfId,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null" >
+        #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        #{endDate,jdbcType=DATE},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="allor != null" >
+        #{allor,jdbcType=VARCHAR},
+      </if>
+      <if test="allorTime != null" >
+        #{allorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="creater != null" >
+        #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 保存模块修改 -->
+  <update id="saveModuleEdit" parameterType="com.ccx.custom.model.Module" >
+    update abs_module
+    <set >
+     <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+     <if test="startDate != null" >
+        start_date = #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        end_date = #{endDate,jdbcType=DATE},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=TINYINT},
+      </if>
+      <if test="allor != null" >
+        allor = #{allor,jdbcType=VARCHAR},
+      </if>
+      <if test="allorTime != null" >
+        allor_time = #{allorTime,jdbcType=TIMESTAMP}
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 修改模块状态 -->
+  <update id="updateModuleState" parameterType="com.ccx.custom.model.Module" >
+    update abs_module
+    <set >
+     <if test="state != null" >
+        state = #{state,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 查询所有改机构角色列表 -->
+  <select id="findAllInsRoleList" parameterType="com.ccx.util.page.Page" resultMap="RoleResultMap">
+    select 
+    <include refid="Role_Column_List" />
+    from abs_role_fg
+    where 1=1 and status = 0 
+    <if test=" null!=params.insId and ''!=params.insId" >
+  	     and company_id = #{params.insId}
+  	</if> 
+  	order by create_time desc
+  </select>
+  
+  <!-- 校验角色是否唯一 -->
+	<select id="getRoleByNameAndInsId" resultMap="RoleResultMap" parameterType="map">
+		select
+		<include refid="Role_Column_List" />
+		from abs_role_fg
+		<where>
+	    	status = 0
+	    	<if test="null!= insId and ''!= insId " > 
+	    		and company_id = #{insId}
+	    	</if>
+	    	<if test="null!= roleName and ''!= roleName " > 
+	    		and name = #{roleName} 
+	    	</if>
+  		</where>
+	</select>
+  
+  
+  <!-- 保存新增的机构角色 -->
+  <insert id="saveInsRoleAdd" parameterType="com.ccx.custom.model.RoleFg" >
+    insert into abs_role_fg
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+       <if test="status != null" >
+        status,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="creater != null" >
+        creater,
+      </if>
+        create_time,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null" >
+        #{creater,jdbcType=INTEGER},
+      </if>
+        NOW(),
+    </trim>
+  </insert>
+  
+  <!-- 保存编辑的角色 -->
+  <update id="saveInsRoleEdit" parameterType="com.ccx.custom.model.RoleFg" >
+    update abs_role_fg
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null" >
+        creater = #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 删除角色时 ，查看该角色下是否有可用账户，有：不能删除。 无：删除-->
+  <select id="finUserByRoleId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+	SELECT COUNT(1) FROM (
+		SELECT
+		us.id AS id,
+		us.login_name AS loginName,
+		us.NAME AS name
+		from abs_user_fg us
+		LEFT JOIN abs_user_role_fg ur ON us.id = ur.user_id
+		WHERE 1 = 1 and us.is_del=0 and ur.role_id= #{id,jdbcType=BIGINT}
+		) DATA
+  </select>
+  
+  <!-- 删除角色 -->
+  <update id="deleteInsRole" parameterType="com.ccx.custom.model.RoleFg" >
+    update abs_role_fg
+    <set >
+       <if test="status != null" >
+         status = #{status,jdbcType=TINYINT}
+       </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 通过id查询机构角色 -->
+  <select id="getInsRoleById" parameterType="java.lang.Long" resultMap="RoleResultMap">
+    select 
+    <include refid="Role_Column_List" />
+    from abs_role_fg
+    where 1=1 and status = 0 
+    and id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 查询该机构下的权限树 -->
+  <select id="findInsPermissionTree" parameterType="java.lang.Long" resultType="com.ccx.custom.model.PermissionTreeBeanFg">
+		SELECT
+			D.id,
+			D.text,
+			D.parentId,
+			CASE
+		WHEN D.ids IN (
+			SELECT
+				resource_id
+			FROM
+				abs_role_resource_fg
+			WHERE
+				role_id = #{0}
+		) THEN
+			1
+		ELSE
+			0
+		END checked
+		FROM
+			(
+				SELECT
+					ID as ids,
+					MYSELF_ID AS id,
+					PERMISSION_NAME AS text,
+					PARENT_ID AS parentId
+				FROM
+					abs_resource_fg
+				WHERE
+					STATE = 1
+				AND PARENT_ID = '0'
+				UNION ALL
+					SELECT
+						C.ids,
+						C.id,
+						C.text,
+						C.parentId
+					FROM
+						(
+							SELECT
+								A.id AS ids,
+								A.MYSELF_ID AS id,
+								A.PERMISSION_NAME AS text,
+								A.PARENT_ID AS parentId
+							FROM
+								abs_resource_fg AS A,
+								(
+									SELECT
+										am.myself_id
+									FROM
+										abs_module am
+									WHERE
+										am.institution_id = #{1}
+									AND am.state = 0
+									AND am.is_del = 0
+								) B
+							WHERE
+								A.STATE = 1
+							AND (
+								A.MYSELF_ID = B.myself_id
+								OR A.PARENT_ID = B.myself_id
+							)
+							ORDER BY
+								A.`LEVEL`,
+								A.PARENT_ID,
+								A.SEQUENCE_NUM
+						) C
+			) D
+  </select>
+  
+  <!-- 查询该机构下的权限树 -->
+  <select id="findInsPermissionTreeMy" resultType="com.ccx.custom.model.PermissionTreeBeanFg">
+		SELECT
+			D.id,
+			D.text,
+			D.parentId,
+			CASE
+		WHEN D.ids IN (
+			SELECT
+				resource_id
+			FROM
+				abs_role_resource_fg
+			WHERE
+				role_id = #{roleId,jdbcType=BIGINT}
+		) THEN
+			1
+		ELSE
+			0
+		END checked
+		FROM
+			(
+				SELECT
+					A.id AS ids,
+					A.MYSELF_ID AS id,
+					A.PERMISSION_NAME AS text,
+					A.PARENT_ID AS parentId
+				FROM
+					abs_resource_fg AS A
+				WHERE
+					A.STATE = 1
+				AND A.MYSELF_ID LIKE CONCAT(#{myselfId,jdbcType=VARCHAR},'%')
+				ORDER BY
+					A.`LEVEL`,
+					A.PARENT_ID,
+					A.SEQUENCE_NUM
+			) D
+  </select>
+  
+  <!-- 保存分配权限 -->
+  <delete id="delRolePermissionByRole" parameterType="java.lang.Long">
+		DELETE
+		FROM
+			abs_role_resource_fg
+		WHERE
+			role_id = #{id,jdbcType=BIGINT}
+  </delete>
+  <select id="getPermissionId" parameterType="String" resultType="Integer">
+		SELECT
+			id
+		FROM
+			abs_resource_fg
+		WHERE
+			MYSELF_ID = #{perId,jdbcType=BIGINT}
+  </select>
+  <insert id="addInsRolePermission" parameterType="Map">
+   		INSERT INTO 
+   			abs_role_resource_fg 
+   			(
+   				role_id, 
+   				resource_id
+   			)
+		VALUE
+			(
+				#{id},
+				#{perId}
+			)
+	</insert>
+	
+	<!-- 通过机构id获取该机构下最多可设置的账号数量 -->
+  <select id="getUserNumByInsId" parameterType="java.lang.Long" resultMap="UserNumResultMap">
+		SELECT
+			<include refid="UserNum_Column_List" />
+		FROM
+			abs_user_num_fg
+		WHERE
+			institution_id = #{insId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 获取该机构下已经创建的账号数量 -->
+  <select id="getHasUserNum" parameterType="java.lang.Long" resultType="String">
+		SELECT
+			count(0) AS hasUserNum
+		FROM
+			abs_user_fg
+		WHERE 1=1 
+			and is_del = 0
+			and institution_id = #{insId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 修改该机构下设置账号的最大数量 -->
+  <delete id="delUserNum" parameterType="com.ccx.custom.model.UserNumBean">
+		DELETE
+		FROM
+			abs_user_num_fg
+		WHERE
+			institution_id = #{institutionId,jdbcType=BIGINT}
+  </delete>
+  <insert id="saveEditUserNum" parameterType="com.ccx.custom.model.UserNumBean">
+   		INSERT INTO abs_user_num_fg 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        id,
+	      </if>
+	      <if test="institutionId != null" >
+	        institution_id,
+	      </if>
+	      <if test="limitNum != null" >
+	        limitNum,
+	      </if>
+	      <if test="creater != null" >
+	        creater,
+	      </if>
+	        create_time,
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        #{id,jdbcType=BIGINT},
+	      </if>
+	      <if test="institutionId != null" >
+	        #{institutionId,jdbcType=TINYINT},
+	      </if>
+	      <if test="limitNum != null" >
+	        #{limitNum,jdbcType=TINYINT},
+	      </if>
+	      <if test="creater != null" >
+	        #{creater,jdbcType=INTEGER},
+	      </if>
+	        NOW(),
+	    </trim>
+	</insert>
+	
+	<!-- 查询该机构所有用户列表 -->
+  <select id="findAllInsUserList" parameterType="com.ccx.util.page.Page" resultType="com.ccx.custom.model.UserVoFg">
+		SELECT
+		us.id AS id,
+		us.login_name AS loginName,
+		us.name AS name,
+		us.phone AS phone,
+		us.email AS email,
+		us.password AS password,
+		us.status AS status,
+		us.institution_id AS institutionId,
+		us.user_type AS userType,
+		us.creater AS creater,
+		us.create_time AS createTime,
+		ro.id AS roleId,
+		ro.name AS roleName
+		from abs_user_fg us
+		LEFT JOIN abs_user_role_fg ur ON us.id = ur.user_id
+		LEFT JOIN abs_role_fg ro ON ur.role_id = ro.id
+		where 1=1 and us.is_del = 0
+    	<if test="null!= params.insId and ''!= params.insId" > 
+    		and us.institution_id = #{params.insId}
+    	</if>
+  	order by us.create_time
+	</select>
+  
+  <!-- 根据userId获取机构下的用户 -->
+  <select id="getInsUserById" parameterType="java.lang.Long" resultType="com.ccx.custom.model.UserVoFg">
+    SELECT
+		us.id AS id,
+		us.login_name AS loginName,
+		us.name AS name,
+		us.phone AS phone,
+		us.email AS email,
+		us.password AS password,
+		us.status AS status,
+		us.institution_id AS institutionId,
+		us.user_type AS userType,
+		us.creater AS creater,
+		us.create_time AS createTime,
+		ro.id AS roleId,
+		ro.name AS roleName
+		from abs_user_fg us
+		LEFT JOIN abs_user_role_fg ur ON us.id = ur.user_id
+		LEFT JOIN abs_role_fg ro ON ur.role_id = ro.id
+		where 1=1 and us.is_del = 0
+    	and us.id = #{userId,jdbcType=INTEGER}
+  	order by us.create_time
+  </select>
+  
+  <!-- 查询所有改机构角色列表 -->
+  <select id="findAllInsRole" parameterType="java.lang.Long" resultMap="RoleResultMap">
+    select 
+    <include refid="Role_Column_List" />
+    from abs_role_fg
+    where 1=1 and status = 0 and company_id = #{insId,jdbcType=INTEGER}
+  	order by create_time desc
+  </select>
+  
+  <!-- 新增机构用户 -->
+  <insert id="saveAddInsUser" parameterType="com.ccx.custom.model.UserFg" useGeneratedKeys="true" keyProperty="id">
+   		INSERT INTO abs_user_fg 
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        id,
+	      </if>
+	      <if test="loginName != null" >
+	        login_name,
+	      </if>
+	      <if test="name != null" >
+	        name,
+	      </if>
+	      <if test="password != null" >
+	        password,
+	      </if>
+	      <if test="phone != null" >
+	        phone,
+	      </if>
+	      <if test="email != null" >
+	        email,
+	      </if>
+	      <if test="userType != null" >
+	        user_type,
+	      </if>
+	      <if test="institutionId != null" >
+	        institution_id,
+	      </if>
+	      <if test="status != null" >
+	        status,
+	      </if>
+	      <if test="isDel != null" >
+	        is_del,
+	      </if>
+	      <if test="creater != null" >
+	        creater,
+	      </if>
+	        create_time,
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        #{id,jdbcType=BIGINT},
+	      </if>
+	      <if test="loginName != null" >
+	        #{loginName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="name != null" >
+	        #{name,jdbcType=VARCHAR},
+	      </if>
+	      <if test="password != null" >
+	        #{password,jdbcType=VARCHAR},
+	      </if>
+	      <if test="phone != null" >
+	        #{phone,jdbcType=VARCHAR},
+	      </if>
+	      <if test="email != null" >
+	        #{email,jdbcType=VARCHAR},
+	      </if>
+	      <if test="userType != null" >
+	        #{userType,jdbcType=TINYINT},
+	      </if>
+	      <if test="institutionId != null" >
+	        #{institutionId,jdbcType=INTEGER},
+	      </if>
+	      <if test="status != null" >
+	        #{status,jdbcType=TINYINT},
+	      </if>
+	      <if test="isDel != null" >
+	        #{isDel,jdbcType=TINYINT},
+	      </if>
+	      <if test="creater != null" >
+	        #{creater,jdbcType=VARCHAR},
+	      </if>
+	      NOW(),
+	    </trim>
+	</insert>
+  	<!-- 新增机构用户角色关联 -->
+  <insert id="addInsRoleToInsUser" parameterType="com.ccx.custom.model.UserRoleFg">
+   		INSERT INTO abs_user_role_fg 
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        id,
+	      </if>
+	      <if test="userId != null" >
+	        user_id,
+	      </if>
+	      <if test="roleId != null" >
+	        role_id,
+	      </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        #{id,jdbcType=BIGINT},
+	      </if>
+	      <if test="userId != null" >
+	        #{userId,jdbcType=INTEGER},
+	      </if>
+	      <if test="roleId != null" >
+	        #{roleId,jdbcType=INTEGER},
+	      </if>
+	    </trim>
+	</insert>
+  
+   <!-- 查询该机构下登录名是否已存在 -->
+  <select id="getUserByName" parameterType="Map" resultMap="UserFgResultMap">
+    select 
+    <include refid="UserFg_Column_List" />
+    from abs_user_fg
+    where 1=1 and is_del = 0 
+    and login_name = #{loginName,jdbcType=VARCHAR}
+    and institution_id = #{insId,jdbcType=INTEGER}
+  	order by create_time desc
+  </select>
+  
+  <!-- 查询该机构下登录名是否已存在 -->
+  <select id="getUserListByName" parameterType="Map" resultMap="UserFgResultMap">
+    select 
+    <include refid="UserFg_Column_List" />
+    from abs_user_fg
+    where 1=1 and is_del = 0 
+    and login_name = #{loginName,jdbcType=VARCHAR}
+<!--     and institution_id = #{insId,jdbcType=INTEGER} -->
+  	order by create_time desc
+  </select>
+  
+  
+  	<!-- 修改用户信息 -->
+	<update id="updateInsUser" parameterType="com.ccx.custom.model.UserFg">
+		update abs_user_fg
+		<set>
+			<if test="loginName != null">
+				login_name = #{loginName,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="institutionId != null">
+				institution_id = #{institutionId,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=TINYINT},
+			</if>
+			<if test="loginNum != null">
+				loginNum = #{loginNum,jdbcType=INTEGER},
+			</if>
+			<if test="loginTime != null">
+				loginTime = #{loginTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+  
+  <!-- 修改机构角色 -->
+	<update id="updateInsRole" parameterType="com.ccx.custom.model.UserRoleFg">
+		update abs_user_role_fg
+		set
+		role_id = #{roleId,jdbcType=BIGINT}
+		where user_id = #{userId,jdbcType=BIGINT}
+	</update>
+  
+  	<!-- 查询该机构所有IP列表 -->
+  <select id="findAllInsIPList" parameterType="com.ccx.util.page.Page" resultType="com.ccx.custom.model.IPBean">
+		SELECT
+		id, 
+		ip_address ipAddress, 
+		create_plantform createPlantform, 
+		state, 
+		ip_upper_limit ipUpperLimit, 
+		institution_id institutionId, 
+		creator, 
+    	create_time createTime
+    	from abs_ip
+    	where 1=1 and state = 0
+    	<if test="null!= params.insId and ''!= params.insId" > 
+    		and institution_id = #{params.insId}
+    	</if>
+  	order by create_time desc
+	</select>
+  
+  <!-- 新增机构ip -->
+  <insert id="saveInsIPAdd" parameterType="com.ccx.custom.model.IPBean">
+    insert into abs_ip
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="ipAddress != null">
+        ip_address,
+      </if>
+      <if test="createPlantform != null">
+        create_plantform,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="ipUpperLimit != null">
+        ip_upper_limit,
+      </if>
+      <if test="institutionId != null">
+        institution_id,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="ipAddress != null">
+        #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createPlantform != null">
+        #{createPlantform,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="ipUpperLimit != null">
+        #{ipUpperLimit,jdbcType=INTEGER},
+      </if>
+      <if test="institutionId != null">
+        #{institutionId,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 编辑机构ip -->
+  <update id="saveInsIPEdit" parameterType="com.ccx.custom.model.IPBean">
+    update abs_ip
+    <set>
+      <if test="ipAddress != null">
+        ip_address = #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createPlantform != null">
+        create_plantform = #{createPlantform,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="ipUpperLimit != null">
+        ip_upper_limit = #{ipUpperLimit,jdbcType=INTEGER},
+      </if>
+      <if test="institutionId != null">
+        institution_id = #{institutionId,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <!-- 检验ip是否已存在 -->
+  <select id="checkIPAdress" parameterType="Map" resultType="com.ccx.custom.model.IPBean">
+    SELECT
+		id, 
+		ip_address ipAddress, 
+		create_plantform createPlantform, 
+		state, 
+		ip_upper_limit ipUpperLimit, 
+		institution_id institutionId, 
+		creator, 
+    	create_time createTime
+    	from abs_ip
+    	where 1=1 and state = 0
+    	<if test="null!= insId and ''!= insId" > 
+    		and institution_id = #{insId,jdbcType=INTEGER}
+    	</if>
+    	<if test="null!= ipAdress and ''!= ipAdress" > 
+    		and ip_address = #{ipAdress,jdbcType=VARCHAR}
+    	</if>
+  	order by create_time desc
+  </select>
+  
+  
+</mapper>

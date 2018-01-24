@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.reporttype.dao.AbsEnterpriseReportTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.reporttype.model.AbsEnterpriseReportType" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="version" property="version" jdbcType="TINYINT" />
+    <result column="last_version_id" property="lastVersionId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, creator_name, create_date, version, last_version_id, status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from abs_enterprise_report_type
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from abs_enterprise_report_type
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportType" useGeneratedKeys="true" keyProperty="id">
+    insert into abs_enterprise_report_type ( name, creator_name,
+      create_date, version, last_version_id, 
+      status)
+    values ( #{name,jdbcType=VARCHAR}, #{creatorName,jdbcType=VARCHAR},
+      #{createDate,jdbcType=TIMESTAMP}, #{version,jdbcType=TINYINT}, #{lastVersionId,jdbcType=INTEGER}, 
+      #{status,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportType" >
+    insert into abs_enterprise_report_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="lastVersionId != null" >
+        last_version_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=TINYINT},
+      </if>
+      <if test="lastVersionId != null" >
+        #{lastVersionId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportType" >
+    update abs_enterprise_report_type
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorName != null" >
+        creator_name = #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=TINYINT},
+      </if>
+      <if test="lastVersionId != null" >
+        last_version_id = #{lastVersionId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportType" >
+    update abs_enterprise_report_type
+    set name = #{name,jdbcType=VARCHAR},
+      creator_name = #{creatorName,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=TINYINT},
+      last_version_id = #{lastVersionId,jdbcType=INTEGER},
+      status = #{status,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+<select id="getList" parameterType="com.ccx.util.page.Page" resultType="com.ccx.reporttype.pojo.AbsReportType" >
+    SELECT id, name,status,ctime,tnames,ifcheck,cname FROM (
+      SELECT
+      t1.id,
+        t1. name,
+        status,
+        create_date ctime,
+        tnames,
+        (
+            CASE
+            WHEN t3.report_type IS NULL THEN
+                0
+            ELSE
+                1
+            END
+        ) ifcheck,
+        t1.creator_name cname
+    FROM
+        abs_enterprise_report_type t1
+    LEFT JOIN (
+        SELECT
+            report_type,
+            GROUP_CONCAT(tt1. NAME) tnames
+        FROM
+            abs_enterprise_industry_type tt
+        JOIN abs_enterprise_industry tt1 ON tt.industry_id = tt1.id
+          WHERE tt.`status` = 0
+        GROUP BY
+            report_type
+    ) t2 ON t1.id = t2.report_type
+    LEFT JOIN (
+        SELECT
+            report_type
+        FROM
+            abs_enterprise_report_check
+        GROUP BY
+            report_type
+    ) t3 ON t1.id = t3.report_type WHERE t1.status=0 OR t1.status=2 OR t1.status=3) t
+    ORDER BY ctime DESC
+  </select>
+<select id="getTypes" parameterType="java.lang.Integer" resultType="java.util.Map" >
+  SELECT
+		industry_id,
+		t2. name,
+		t3. NAME pname
+	FROM
+		abs_enterprise_industry_type t1
+	JOIN abs_enterprise_industry t2 ON t1.industry_id = t2.id
+	JOIN abs_enterprise_industry t3 ON t2.pid = t3.id
+	WHERE
+		t1.report_type = #{typeId} AND status=0
+  </select>
+<select id="getTypesAndIns"  resultType="java.util.Map" parameterType="java.lang.Integer">
+   SELECT
+     DISTINCT
+      industry_id,
+      report_type,
+      status
+  FROM
+      abs_enterprise_industry_type
+  WHERE
+      STATUS = 0 AND report_type=#{typeId}
+  </select>
+
+  <!--分页查看-->
+  <select id="getPageList2" resultType="com.ccx.enterprise.model.IndustryShow" parameterType="com.ccx.util.page.Page">
+    SELECT * FROM
+    (
+      SELECT
+        id1,
+        name1,
+        id AS id2,
+        t1.NAME AS name2,
+        model_id0 AS modelId0,
+        model_id1 AS modelId1,
+      t3.report_type type,
+        t3.name modelName
+    FROM
+        abs_enterprise_industry t1
+    JOIN (
+        SELECT
+            id AS id1,
+            NAME AS name1
+        FROM
+            abs_enterprise_industry
+        WHERE
+            pid = 0
+    ) t2 ON t1.pid = t2.id1
+    LEFT JOIN
+    (
+    SELECT t1.industry_id,t1.report_type,t2.name from abs_enterprise_industry_type t1
+     join abs_enterprise_report_type t2 on  t1.report_type=t2.id where t1.status=0
+    )t3 on t1.id=t3.industry_id
+    )a
+  </select>
+
+    <select id="selectCheckIfUse" resultType="java.util.Map" parameterType="java.lang.Integer" >
+        SELECT COUNT(1) c_t from abs_enterprise_report  where type=#{typeId}
+    </select>
+
+    <select id="deleteType" resultType="java.util.Map" parameterType="java.lang.Integer" >
+        {call del_type_opreat(#{typeId})}
+    </select>
+
+
+</mapper>

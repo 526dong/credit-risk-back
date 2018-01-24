@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.pricedata.dao.PriceDataMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.pricedata.model.PriceData" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="rate_result" property="rateResult" jdbcType="INTEGER" />
+    <result column="cash_deposit_min" property="cashDepositMin" jdbcType="VARCHAR" />
+    <result column="cash_deposit_max" property="cashDepositMax" jdbcType="VARCHAR" />
+    <result column="handling_charge_min" property="handlingChargeMin" jdbcType="VARCHAR" />
+    <result column="handling_charge_max" property="handlingChargeMax" jdbcType="VARCHAR" />
+    <result column="interest_rate_min" property="interestRateMin" jdbcType="VARCHAR" />
+    <result column="interest_rate_max" property="interestRateMax" jdbcType="VARCHAR" />
+    <result column="irr_min" property="irrMin" jdbcType="VARCHAR" />
+    <result column="irr_max" property="irrMax" jdbcType="VARCHAR" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="institution_id" property="institutionId" jdbcType="INTEGER" />
+    <!-- 评级结果 -->
+    <association property="rateResultName" select="findResultById" column="{id=rate_result}"> 
+    </association>
+  </resultMap>
+ 
+  <sql id="Base_Column_List" >
+    id, rate_result, cash_deposit_min, cash_deposit_max, 
+    handling_charge_min, handling_charge_max, interest_rate_min, interest_rate_max, irr_min, 
+    irr_max, creator_name, create_time, institution_id
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from price_data
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!--获取带分页list-->
+  <select id="findAll" parameterType="com.ccx.util.page.Page" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from price_data 
+  </select>
+  
+  <select id="findResultById" resultType="java.lang.String" parameterType="java.util.Map">
+  	select 
+  		name
+  	from rate_result 
+  	where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <update id="updateByPrimaryKey" parameterType="com.ccx.pricedata.model.PriceData" >
+    update price_data
+    set rate_result = #{rateResult,jdbcType=INTEGER},
+      cash_deposit_min = #{cashDepositMin,jdbcType=VARCHAR},
+      cash_deposit_max = #{cashDepositMax,jdbcType=VARCHAR},
+      handling_charge_min = #{handlingChargeMin,jdbcType=VARCHAR},
+      handling_charge_max = #{handlingChargeMax,jdbcType=VARCHAR},
+      interest_rate_min = #{interestRateMin,jdbcType=VARCHAR},
+      interest_rate_max = #{interestRateMax,jdbcType=VARCHAR},
+      irr_min = #{irrMin,jdbcType=VARCHAR},
+      irr_max = #{irrMax,jdbcType=VARCHAR},
+      creator_name = #{creatorName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      institution_id = #{institutionId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!--creator_name = #{creatorName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},-->
+</mapper>

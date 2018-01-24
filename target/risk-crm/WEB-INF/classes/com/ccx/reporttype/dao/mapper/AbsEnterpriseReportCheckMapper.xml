@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.reporttype.dao.AbsEnterpriseReportCheckMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.reporttype.model.AbsEnterpriseReportCheck" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="report_type" property="reportType" jdbcType="INTEGER" />
+    <result column="formula" property="formula" jdbcType="VARCHAR" />
+    <result column="formula_chinese" property="formulaChinese" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, report_type, formula, formula_chinese, create_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from abs_enterprise_report_check
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from abs_enterprise_report_check
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportCheck" >
+    insert into abs_enterprise_report_check (id, report_type, formula, 
+      formula_chinese, create_date)
+    values (#{id,jdbcType=INTEGER}, #{reportType,jdbcType=INTEGER}, #{formula,jdbcType=VARCHAR}, 
+      #{formulaChinese,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportCheck" >
+    insert into abs_enterprise_report_check
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="reportType != null" >
+        report_type,
+      </if>
+      <if test="formula != null" >
+        formula,
+      </if>
+      <if test="formulaChinese != null" >
+        formula_chinese,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="reportType != null" >
+        #{reportType,jdbcType=INTEGER},
+      </if>
+      <if test="formula != null" >
+        #{formula,jdbcType=VARCHAR},
+      </if>
+      <if test="formulaChinese != null" >
+        #{formulaChinese,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportCheck" >
+    update abs_enterprise_report_check
+    <set >
+      <if test="reportType != null" >
+        report_type = #{reportType,jdbcType=INTEGER},
+      </if>
+      <if test="formula != null" >
+        formula = #{formula,jdbcType=VARCHAR},
+      </if>
+      <if test="formulaChinese != null" >
+        formula_chinese = #{formulaChinese,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportCheck" >
+    update abs_enterprise_report_check
+    set report_type = #{reportType,jdbcType=INTEGER},
+      formula = #{formula,jdbcType=VARCHAR},
+      formula_chinese = #{formulaChinese,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--根据对象查询-->
+  <select id="selectByModel" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportCheck" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+      from abs_enterprise_report_check
+    where true
+      <if test="reportType != null" >
+        and report_type = #{reportType,jdbcType=INTEGER}
+      </if>
+  </select>
+
+  <!--批量插入-->
+  <insert id="insertList" parameterType="java.util.List">
+     insert into abs_enterprise_report_check (id, report_type, formula,
+      formula_chinese, create_date)
+    values
+      <foreach collection="list" item="check" separator=",">
+        (#{check.id,jdbcType=INTEGER}, #{check.reportType,jdbcType=INTEGER}, #{check.formula,jdbcType=VARCHAR},
+         #{check.formulaChinese,jdbcType=VARCHAR}, #{check.createDate,jdbcType=TIMESTAMP})
+      </foreach>
+  </insert>
+
+  <!--删除类型的所有规则-->
+  <delete id="deleteByTypeId" parameterType="java.lang.Integer">
+    delete from abs_enterprise_report_check
+      where report_type = #{0}
+  </delete>
+</mapper>

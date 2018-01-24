@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.enterprise.dao.EnterpriseDao" >
+  <resultMap id="BaseResultMap" type="com.ccx.enterprise.model.Enterprise" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="credit_code_type" property="creditCodeType" jdbcType="INTEGER" />
+    <result column="credit_code" property="creditCode" jdbcType="VARCHAR" />
+    <result column="scale" property="scale" jdbcType="VARCHAR" />
+
+    <result column="nature" property="nature" jdbcType="INTEGER" />
+    <result column="industry1" property="industry1" jdbcType="INTEGER" />
+    <result column="industry2" property="industry2" jdbcType="INTEGER" />
+    <result column="province_id" property="provinceId" jdbcType="VARCHAR" />
+    <result column="city_id" property="cityId" jdbcType="VARCHAR" />
+    <result column="county_id" property="countyId" jdbcType="VARCHAR" />
+
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="corporate_name" property="corporateName" jdbcType="VARCHAR" />
+    <result column="corporate_cid" property="corporateCid" jdbcType="VARCHAR" />
+    <result column="corporate_phone" property="corporatePhone" jdbcType="VARCHAR" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="approval_state" property="approvalState" jdbcType="INTEGER" />
+    <result column="rating_type" property="ratingType" jdbcType="INTEGER" />
+    <result column="rating_apply_num" property="ratingApplyNum" jdbcType="VARCHAR" />
+    <result column="report_id" property="reportId" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="is_delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+
+    <!-- 二级行业 -->
+    <association property="reportType" select="findReportTypeByIndustry2Id" column="{id=industry2}"></association>
+
+    <!-- 企业性质 -->
+    <association property="natureName" select="findNature" column="{id=nature}"></association>
+    <!-- 一级行业 -->
+    <association property="industry1Name" select="findIndustryById" column="{id=industry1}"></association>
+    <!-- 二级行业 -->
+    <association property="industry2Name" select="findIndustryById" column="{id=industry2}"></association>
+    <!-- 最新报表 -->
+    <association property="latestReport" select="findReportById" column="{id=report_id}"></association>
+    <!-- 机构 -->
+    <association property="ins" select="findInsById" column="{id=company_id}"></association>
+  </resultMap>
+
+  <resultMap id="BaseApprovalResultMap" type="com.ccx.enterprise.model.HistoryApproval" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="enterprise_id" property="enterpriseId" jdbcType="INTEGER" />
+    <result column="report_ids" property="reportIds" jdbcType="VARCHAR" />
+    <result column="rating_apply_num" property="ratingApplyNum" jdbcType="VARCHAR" />
+    <result column="initiator" property="initiator" jdbcType="VARCHAR" />
+    <result column="initiate_time" property="initiateTime" jdbcType="TIMESTAMP" />
+    <result column="approver" property="approver" jdbcType="VARCHAR" />
+    <result column="approval_time" property="approvalTime" jdbcType="TIMESTAMP" />
+    <result column="approval_status" property="approvalStatus" jdbcType="INTEGER" />
+    <result column="pre_rating_result" property="preRatingResult" jdbcType="VARCHAR" />
+    <result column="rating_result" property="ratingResult" jdbcType="VARCHAR" />
+    <result column="shadow_rating_result" property="shadowRatingResult" jdbcType="VARCHAR" />
+    <result column="refuse_reason" property="refuseReason" jdbcType="VARCHAR" />
+    <result column="rating_type" property="ratingType" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="act_task_id" property="actTaskId" jdbcType="VARCHAR" />
+    <result column="index_ids" property="indexIds" jdbcType="VARCHAR" />
+    <result column="rule_ids" property="ruleIds" jdbcType="VARCHAR" />
+    <result column="adjust_content" property="adjustContent" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="BaseReportResultMap" type="com.ccx.enterprise.model.Report" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="report_time" property="reportTime" jdbcType="VARCHAR" />
+    <result column="cal" property="cal" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="cycle" property="cycle" jdbcType="INTEGER" />
+    <result column="is_audit" property="audit" jdbcType="INTEGER" />
+    <result column="currency" property="currency" jdbcType="INTEGER" />
+    <result column="audit_unit" property="auditUnit" jdbcType="VARCHAR" />
+    <result column="audit_opinion" property="auditOpinion" jdbcType="VARCHAR" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="is_delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="InsResultMap" type="com.ccx.custom.model.Institution">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="NatureResult" type="com.ccx.dictionary.model.EnterpriseNature">
+  	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- 查询历史评级 -->
+  <resultMap id="BaseApprovalMap" type="com.ccx.enterprise.model.HistoryApproval" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="enterprise_id" property="enterpriseId" jdbcType="INTEGER" />
+    <result column="report_ids" property="reportIds" jdbcType="VARCHAR" />
+    <result column="rating_apply_num" property="ratingApplyNum" jdbcType="VARCHAR" />
+    <result column="initiator" property="initiator" jdbcType="VARCHAR" />
+    <result column="initiate_time" property="initiateTime" jdbcType="TIMESTAMP" />
+    <result column="approver" property="approver" jdbcType="VARCHAR" />
+    <result column="approval_time" property="approvalTime" jdbcType="TIMESTAMP" />
+    <result column="approval_status" property="approvalStatus" jdbcType="INTEGER" />
+    <result column="pre_rating_result" property="preRatingResult" jdbcType="VARCHAR" />
+    <result column="rating_result" property="ratingResult" jdbcType="VARCHAR" />
+    <result column="shadow_rating_result" property="shadowRatingResult" jdbcType="VARCHAR" />
+    <result column="refuse_reason" property="refuseReason" jdbcType="VARCHAR" />
+    <result column="rating_type" property="ratingType" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="act_task_id" property="actTaskId" jdbcType="VARCHAR" />
+    <result column="index_ids" property="indexIds" jdbcType="VARCHAR" />
+    <result column="rule_ids" property="ruleIds" jdbcType="VARCHAR" />
+    <result column="adjust_content" property="adjustContent" jdbcType="VARCHAR" />
+    <!-- 企业关联 -->
+    <association property="enterprise" select="findEnterpriseById" column="{id=enterprise_id}"></association>
+  </resultMap>
+
+  <resultMap id="BaseEnterpriseResultMap" type="com.ccx.enterprise.model.Enterprise" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="credit_code_type" property="creditCodeType" jdbcType="INTEGER" />
+    <result column="credit_code" property="creditCode" jdbcType="VARCHAR" />
+    <result column="scale" property="scale" jdbcType="VARCHAR" />
+
+    <result column="nature" property="nature" jdbcType="INTEGER" />
+    <result column="industry1" property="industry1" jdbcType="INTEGER" />
+    <result column="industry2" property="industry2" jdbcType="INTEGER" />
+    <result column="province_id" property="provinceId" jdbcType="INTEGER" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="county_id" property="countyId" jdbcType="INTEGER" />
+
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="corporate_name" property="corporateName" jdbcType="VARCHAR" />
+    <result column="corporate_cid" property="corporateCid" jdbcType="VARCHAR" />
+    <result column="corporate_phone" property="corporatePhone" jdbcType="VARCHAR" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="approval_state" property="approvalState" jdbcType="INTEGER" />
+    <result column="rating_type" property="ratingType" jdbcType="INTEGER" />
+    <result column="rating_apply_num" property="ratingApplyNum" jdbcType="VARCHAR" />
+    <result column="report_id" property="reportId" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+
+    <!-- 企业性质 -->
+    <association property="natureName" select="findNature" column="{id=nature}"></association>
+    <!-- 一级行业 -->
+    <association property="industry1Name" select="findIndustryById" column="{id=industry1}"></association>
+    <!-- 二级行业 -->
+    <association property="industry2Name" select="findIndustryById" column="{id=industry2}"></association>
+    <!-- 最新报表 -->
+    <association property="latestReport" select="findReportById" column="{id=report_id}"></association>
+  </resultMap>
+  <!-- 查询历史评级 -->
+
+  <!-- 企业主体sql column -->
+  <sql id="Base_Column_List" >
+    id, name, credit_code_type, credit_code, scale,nature, industry1,industry2, province_id, city_id, county_id, address, type,
+    corporate_name, corporate_cid, corporate_phone, creator_name, create_date, update_date, state,
+    approval_state, rating_type, rating_apply_num, report_id, company_id, is_delete_flag
+  </sql>
+
+  <sql id="Base_Column_List_Approval" >
+    id, enterprise_id, report_ids, rating_apply_num, initiator, initiate_time, approver,
+    approval_time, approval_status, pre_rating_result, rating_result, shadow_rating_result, refuse_reason,
+    rating_type, company_id, act_task_id, index_ids, rule_ids, adjust_content
+  </sql>
+
+  <!-- 报表概况sql column -->
+  <sql id="Base_Column_List_Report" >
+    id, report_time, cal, type, cycle, is_audit, currency, audit_unit, audit_opinion,
+    creator_name, create_date, update_date, company_id
+  </sql>
+
+  <!-- 主体信息查询 start -->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    	<include refid="Base_Column_List" />
+    from abs_enterprise
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="findAll" resultMap="BaseResultMap" parameterType="com.ccx.util.page.Page">
+  	select
+  		<include refid="Base_Column_List" />
+  	from abs_enterprise
+    <where>
+      approval_state = 1
+      and is_delete_flag = 0
+        <if test="null!=params.keyWord and ''!=params.keyWord" > and name like concat('%',#{params.keyWord},'%') </if>
+        <if test="null!=params.startDate and ''!=params.startDate" > and DATE_FORMAT(create_date,'%Y-%m-%d') >= #{params.startDate} </if>
+        <if test="null!=params.endDate and ''!=params.endDate" > and #{params.endDate} >= DATE_FORMAT(create_date,'%Y-%m-%d') </if>
+    </where>
+  	order by create_date DESC
+  </select>
+
+  <select id="findAllEnt" resultType="java.util.Map" parameterType="com.ccx.util.page.Page">
+    SELECT
+      *
+    FROM
+      (
+        SELECT
+        *
+        FROM
+          (
+            SELECT
+            ent.id entId,
+            ent.`name` entName,
+            DATE_FORMAT(ent.create_date, '%Y-%m-%d') entCreateDate,
+            ent.creator_name entCreatorName,
+            approval.id approvalId,
+            approval.rating_apply_num ratingApplyNum,
+            approval.rating_type entType,
+            DATE_FORMAT(approval.initiate_time,'%Y-%m-%d') initiateTime,
+            approval.approver approver,
+            DATE_FORMAT(approval.approval_time,'%Y-%m-%d') approvalTime,
+            approval.approval_status approvalStatus,
+            approval.rating_result ratingResult,
+            approval.rate_report rateReport,
+            approval.shadow_rating_result shadowRatingResult,
+            ins.`name` insName
+            FROM
+            abs_enterprise_approval approval,
+            abs_enterprise ent,
+            abs_institution ins
+            <where>
+              approval.enterprise_id = ent.id
+              AND ent.is_delete_flag = 0
+              AND ent.company_id = ins.id
+              AND (approval.approval_status = 2 or approval.approval_status = 3)
+              <if test="null!=params.keyWord and ''!=params.keyWord" >
+                and (ent.name like concat('%',#{params.keyWord},'%')
+                or approval.rating_apply_num like concat('%',#{params.keyWord},'%')
+                or ins.name like concat('%',#{params.keyWord},'%'))
+              </if>
+              <if test="null!=params.startDate and ''!=params.startDate" >
+                and DATE_FORMAT(ent.create_date,'%Y-%m-%d') >= #{params.startDate}
+              </if>
+              <if test="null!=params.endDate and ''!=params.endDate" >
+                and #{params.endDate} >= DATE_FORMAT(ent.create_date,'%Y-%m-%d')
+              </if>
+            </where>
+            ORDER BY approval.approval_time DESC
+          ) AS temp
+        GROUP BY temp.entId
+        ORDER BY temp.entId DESC, temp.approvalTime DESC
+        ) a
+  </select>
+
+  <select id="findNature" resultType="java.lang.String" parameterType="java.util.Map">
+  	select
+  		name
+  	from abs_enterprise_nature
+  		where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="findIndustryById" resultType="java.lang.String" parameterType="java.util.Map">
+  	select
+  		name
+  	from abs_enterprise_industry
+  	where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="findRegionById" resultType="java.lang.String" parameterType="java.util.Map">
+  	select
+  		name
+  	from sys_region
+  	where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="findApprovalById" resultMap="BaseApprovalResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List_Approval" />
+    from abs_enterprise_approval
+    where rating_apply_num = #{rating_apply_num,jdbcType=VARCHAR}
+    ORDER by approval_time DESC
+  </select>
+
+  <select id="findReportById" resultMap="BaseReportResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List_Report"></include>
+    from abs_enterprise_report
+	    where id = #{id,jdbcType=INTEGER}
+    and is_delete_flag = 0
+  </select>
+
+  <select id="findInsById" resultMap="InsResultMap" parameterType="java.util.Map" >
+    select id, name
+    from abs_institution
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- 主体信息查询 end -->
+
+  <!-- 查询历史评级 -->
+  <select id="findHistoryRate" resultType="java.util.Map" parameterType="com.ccx.util.page.Page">
+    SELECT
+    ent.id entId,
+    ent.`name` entName,
+    DATE_FORMAT(ent.create_date, '%Y-%m-%d') entCreateDate,
+    ent.creator_name entCreatorName,
+    approval.id id,
+    approval.rating_apply_num ratingApplyNum,
+    approval.rating_type entType,
+    approval.initiator initiator,
+    DATE_FORMAT(approval.initiate_time, '%Y-%m-%d') initiateTime,
+    approval.approval_status approvalStatus,
+    approval.approver approver,
+    DATE_FORMAT(approval.approval_time, '%Y-%m-%d') approvalTime,
+    approval.rating_result ratingResult,
+    approval.rate_report rateReport,
+    approval.shadow_rating_result shadowRatingResult,
+    ins.`name` insName
+    FROM
+    abs_enterprise_approval approval,
+    abs_enterprise ent,
+    abs_institution ins
+    where
+      approval.enterprise_id = ent.id
+      AND ent.is_delete_flag = 0
+      AND ent.company_id = ins.id
+      AND (approval.approval_status = 2 or approval.approval_status = 3)
+      AND ent.id = #{params.enterpriseId,jdbcType=INTEGER}
+    ORDER BY ent.create_date DESC, approval.approval_time DESC
+  </select>
+
+  <!--select
+  		<include refid="Base_Column_List_Approval" />
+  	from abs_enterprise_approval
+  	where enterprise_id = #{params.enterpriseId,jdbcType=INTEGER}
+  		&lt;!&ndash; <where>
+	    	<if test="null!=keyWord and ''!=keyWord" > and name like concat('%',#{keyWord},'%') </if>
+		   	<if test="null!=stateFind and ''!=stateFind" > and state = #{stateFind} </if>
+		   	<if test="null!=typeFind and ''!=typeFind" > and type = #{typeFind} </if>
+  		</where> &ndash;&gt;
+    ORDER by approval_time DESC-->
+
+  <resultMap id="BaseReportTypeMap" type="com.ccx.reporttype.model.AbsEnterpriseReportType" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <!--通过二级行业确定报表类型-->
+  <select id="findReportTypeByIndustry2Id" resultMap="BaseReportTypeMap" parameterType="java.util.Map">
+    SELECT
+    report.id id,
+    report.`name` name
+    FROM
+    abs_enterprise_industry_type industry,
+    abs_enterprise_report_type report
+    WHERE report.id = industry.report_type
+    AND industry.status = 0
+    AND industry_id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="findEnterpriseById" resultMap="BaseEnterpriseResultMap" parameterType="java.util.Map" >
+    select
+    	<include refid="Base_Column_List" />
+    from abs_enterprise
+    where id = #{id,jdbcType=INTEGER}
+    and is_delete_flag = 0
+  </select>
+  <!-- 查询历史评级 -->
+
+  <select id="findNatureById" resultMap="NatureResult" parameterType="java.lang.Integer">
+  	select
+  		id, name
+  	from abs_enterprise_nature
+  		where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="findAllNature" resultMap="NatureResult">
+  	select
+  		id, name
+  	from abs_enterprise_nature
+  	WHERE is_delete_flag = 0
+  	order by id
+  </select>
+
+  <!-- 评级结果详情 -->
+  <resultMap id="BaseRateResultMap" type="com.ccx.enterprise.model.RateResult" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="rating_apply_num" property="ratingApplyNum" jdbcType="VARCHAR" />
+    <result column="ent_id" property="entId" jdbcType="INTEGER" />
+    <result column="element_name" property="elementName" jdbcType="VARCHAR" />
+    <result column="index_name" property="indexName" jdbcType="VARCHAR" />
+    <result column="index_data" property="indexData" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="INTEGER" />
+    <result column="degree" property="degree" jdbcType="VARCHAR" />
+    <result column="final_flag" property="finalFlag" jdbcType="VARCHAR" />
+    <result column="regular_index_flag" property="regularIndexFlag" jdbcType="VARCHAR" />
+    <result column="double_value" property="doubleValue" jdbcType="DOUBLE" />
+    <result column="weight" property="weight" jdbcType="DOUBLE" />
+  </resultMap>
+
+  <sql id="RateResult" >
+    id, rating_apply_num, ent_id, element_name, index_name, index_data, value, degree,
+    final_flag, regular_index_flag, double_value, weight
+  </sql>
+
+  <select id="findByRatingApplyNum" resultMap="BaseRateResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="RateResult" />
+    from abs_rate_result
+    where rating_apply_num = #{rating_apply_num,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 评级结果详情 -->
+
+    <!--查询主体关联了哪些指标-->
+    <select id="selectEnterpriseIndexAndRules" parameterType="java.lang.Integer" resultType="java.util.Map">
+        SELECT GROUP_CONCAT(index_id) AS indexIds, GROUP_CONCAT(rule_id) AS ruleIds FROM abs_enterprise_index_relation WHERE enterprise_id = #{0}
+    </select>
+</mapper>

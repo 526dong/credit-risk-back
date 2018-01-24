@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ccx.system.dao.ResourceMapper">
+	
+	<resultMap id="permissionMap" type="com.ccx.system.model.PermissionBeanBg">
+	 	<result property="id" column="ID"/>
+	 	<result property="permission_name" column="PERMISSION_NAME"/>
+	 	<result property="myselfId" column="MYSELF_ID"/>
+	 	<result property="parentId" column="PARENT_ID"/>
+	 	<result property="type" column="TYPE"/>
+	 	<result property="level" column="LEVEL"/>
+	 	<result property="pathUrl" column="PATH_URL"/>
+	 	<result property="iconUrl" column="ICON_URL"/>
+	 	<result property="sequenceNum" column="SEQUENCE_NUM"/>
+	 	<result property="permission_state" column="STATE"/>
+	 	<result property="description" column="DESCRIPTION"/>
+	 	<result property="open_mode" column="OPEN_MODE"/>
+	 	<result property="company_id" column="COMPANY_ID"/>
+	 	<result property="createTime" column="CREATETIME"/>
+	 	<result property="creater" column="CREATER"/>
+	 	<result property="modifier" column="MODIFIER"/>
+	 	<result property="modifyTime" column="MODIFYTIME"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,
+		MYSELF_ID,PERMISSION_NAME,TYPE,PARENT_ID,LEVEL,PATH_URL,ICON_URL,SEQUENCE_NUM,STATE,DESCRIPTION,
+		open_mode,company_id,CREATETIME,CREATER,MODIFIER,MODIFYTIME
+	</sql>
+	
+
+	<!-- 获取所有权限列表 -->
+	<select id="findAllPermission"   resultMap="permissionMap">
+		SELECT
+			*
+		FROM
+			abs_resource_bg
+		WHERE
+			STATE != 3
+		ORDER BY
+			`LEVEL`,
+			PARENT_ID,
+			SEQUENCE_NUM
+	</select>
+	
+	<!-- 根据唯一标识获取权限列表 -->
+	<select id="getPermissionbyMyselfID"   resultMap="permissionMap" parameterType="String">
+		SELECT
+			*
+		FROM
+			abs_resource_bg
+		WHERE
+			MYSELF_ID = #{0}
+	</select> 
+
+	<!-- 新增权限 -->
+	<insert id="addPermissions" parameterType="com.ccx.system.model.PermissionBeanBg">
+   		INSERT INTO abs_resource_bg (
+			MYSELF_ID,
+			PARENT_ID,
+			PERMISSION_NAME,
+			TYPE,
+			LEVEL,
+			PATH_URL,
+			ICON_URL,
+			SEQUENCE_NUM,
+			STATE,
+			DESCRIPTION,
+			CREATETIME,
+			CREATER,
+			OPEN_MODE,
+			COMPANY_ID
+		)
+		VALUES
+			(
+				#{myselfId},
+				#{parentId},
+				#{permission_name},
+				#{type},
+				#{level},
+				#{pathUrl},
+				#{iconUrl},
+				#{sequenceNum},
+				1,
+				#{description},
+				NOW(),
+				#{creater},
+				#{open_mode},
+				#{company_id}
+			)
+	</insert>
+	
+	<!--  获取用户菜单权限  -->  
+	<select id="getPermissionbyParentId" parameterType="string" resultType="com.ccx.system.model.PermissionBeanBg">
+			SELECT 
+			   ID id,
+			   MYSELF_ID myselfId,
+			   PERMISSION_NAME permission_name, 
+			   TYPE type, 
+			   PATH_URL pathUrl, 
+			   ICON_URL iconUrl, 
+			   SEQUENCE_NUM sequenceNum,
+			   STATE state, 
+			   PARENT_ID parentId,
+			   LEVEL level
+			FROM abs_resource_bg
+			   WHERE PARENT_ID =#{value} ORDER BY LEVEL,PARENT_ID,SEQUENCE_NUM
+	</select>
+	
+	<!--  删除权限（更改权限状态）  -->  
+	<update id="modifypermissionState" parameterType="com.ccx.system.model.PermissionBeanBg" >
+    update abs_resource_bg set 
+       STATE = 3,
+       MODIFIER = #{modifier},
+       MODIFYTIME = #{modifyTime}
+    where MYSELF_ID = #{myselfId}
+  </update>
+  
+  <!--  编辑权限  -->  
+   <update id="modifypermission" parameterType="com.ccx.system.model.PermissionBeanBg" >
+    update abs_resource_bg
+    <set >
+      <if test="myselfId != null" >
+        MYSELF_ID = #{myselfId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        PARENT_ID = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="permission_name != null" >
+        PERMISSION_NAME = #{permission_name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=BIGINT},
+      </if>
+      <if test="level != null" >
+        LEVEL = #{level,jdbcType=BIGINT},
+      </if>
+      <if test="pathUrl != null" >
+        PATH_URL = #{pathUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="iconUrl != null" >
+        ICON_URL = #{iconUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sequenceNum != null" >
+        SEQUENCE_NUM = #{sequenceNum,jdbcType=BIGINT},
+      </if>
+      <if test="permission_state != null" >
+        STATE = #{permission_state,jdbcType=BIGINT},
+      </if>
+      <if test="description != null" >
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="open_mode != null" >
+        OPEN_MODE = #{open_mode,jdbcType=VARCHAR},
+      </if>
+      <if test="company_id != null" >
+        COMPANY_ID = #{company_id,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATETIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creater != null" >
+        CREATER = #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        MODIFIER = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        MODIFYTIME = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 根据parentId获取子资源 -->
+  <select id="selectResByPid" resultMap="permissionMap" parameterType="String">
+  	select <include refid="Base_Column_List" />
+  	from abs_resource_bg
+	where PARENT_ID = #{parentId,jdbcType=VARCHAR} and STATE = 1
+  </select>
+  
+  <!-- 根据id查询资源 -->
+  <select id="selectResourceById" resultMap="permissionMap" parameterType="java.lang.Long">
+  	select <include refid="Base_Column_List" />
+  	from abs_resource_bg
+  	where ID = #{resId,jdbcType=BIGINT}
+  </select>
+  
+  <!-- 根据myselfId查询id -->
+  <select id="selectByMyself" parameterType="java.lang.String" resultType="java.lang.Long">
+  	select id
+  	from abs_resource_bg
+  	where MYSELF_ID = #{myselfId,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 查询所有权限树 -->
+  <select id="finRolePermissionTree" parameterType="java.lang.Long" resultType="com.ccx.system.model.PermissionTreeBeanBg">
+		SELECT
+			A.MYSELF_ID AS id,
+			A.PERMISSION_NAME AS text,
+			A.PARENT_ID AS parentId,
+			CASE
+		WHEN A.ID IN (
+			SELECT
+				resource_id
+			FROM
+				abs_role_resource_bg
+			WHERE
+				role_id = #{id,jdbcType=BIGINT}
+		) THEN
+			1
+		ELSE
+			0
+		END checked
+		FROM
+			abs_resource_bg AS A
+		where STATE = 1
+		ORDER BY
+			`LEVEL`,
+			PARENT_ID,
+			SEQUENCE_NUM;
+  </select>
+  
+ 
+  <!-- 保存分配权限 -->
+  <delete id="delRolePermissionByRole" parameterType="java.lang.Long">
+		DELETE
+		FROM
+			abs_role_resource_bg
+		WHERE
+			role_id = #{id,jdbcType=BIGINT}
+  </delete>
+  <select id="getPermissionId" parameterType="String" resultType="Integer">
+		SELECT
+			id
+		FROM
+			abs_resource_bg
+		WHERE
+			MYSELF_ID = #{perId,jdbcType=BIGINT}
+  </select>
+  <insert id="saveRolePermission" >
+   		INSERT INTO 
+   			abs_role_resource_bg 
+   			(
+   				role_id, 
+   				resource_id
+   			)
+		VALUE
+			(
+				#{id},
+				#{perId}
+			)
+	</insert>
+	
+	<select id="getResByUserId" parameterType="java.lang.Long" resultType="java.lang.Long">
+		SELECT
+			resource_id
+		FROM
+			abs_role_resource_bg
+		WHERE
+			role_id IN (
+				SELECT
+					role_id
+				FROM
+					abs_user_role_bg
+				WHERE
+					user_id = #{id}
+			)
+	</select>
+	
+	
+	
+</mapper>

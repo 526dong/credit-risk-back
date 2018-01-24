@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.index.dao.AbsIndexMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.index.model.AbsIndex" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="index_code" property="indexCode" jdbcType="VARCHAR" />
+    <result column="index_name" property="indexName" jdbcType="VARCHAR" />
+    <result column="equal_pick" property="equalPick" jdbcType="VARCHAR" />
+    <result column="ave_years" property="aveYears" jdbcType="INTEGER" />
+    <result column="regular_index_flag" property="regularIndexFlag" jdbcType="VARCHAR" />
+    <result column="var_name" property="varName" jdbcType="VARCHAR" />
+    <result column="index_weight" property="indexWeight" jdbcType="DOUBLE" />
+    <result column="credit_flag" property="creditFlag" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="element_id" property="elementId" jdbcType="INTEGER" />
+    <result column="formula_id" property="formulaId" jdbcType="INTEGER" />
+    <result column="formula_name" property="formulaName" jdbcType="VARCHAR" />
+    <result column="index_en_name" property="indexEnName" jdbcType="VARCHAR" />
+    <result column="index_describe" property="indexDescribe" jdbcType="VARCHAR" />
+    <collection property="ruleList" select="getRuleListByIndexId" column="{indexId=id}" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, index_code, index_name, equal_pick, ave_years, regular_index_flag, var_name, 
+    index_weight, credit_flag, state, element_id, formula_id, formula_name, index_en_name,  index_describe
+  </sql>
+
+  <!--rule-->
+  <resultMap id="RuleResultMap" type="com.ccx.index.model.AbsIndexRule" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="value_min" property="valueMin" jdbcType="DOUBLE" />
+    <result column="value_max" property="valueMax" jdbcType="DOUBLE" />
+    <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="degree" property="degree" jdbcType="VARCHAR" />
+    <result column="index_id" property="indexId" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Rule_Column_List" >
+    id, value_min, value_max, value, score, degree, index_id, code
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from abs_index
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from abs_index
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ccx.index.model.AbsIndex" keyProperty="id" useGeneratedKeys="true">
+    insert into abs_index (id, index_code, index_name, 
+      equal_pick, ave_years, regular_index_flag, 
+      var_name, index_weight, credit_flag, 
+      state, element_id, formula_id,
+      formula_name, index_en_name, index_describe
+      )
+    values (#{id,jdbcType=INTEGER}, #{indexCode,jdbcType=VARCHAR}, #{indexName,jdbcType=VARCHAR}, 
+      #{equalPick,jdbcType=VARCHAR}, #{aveYears,jdbcType=INTEGER}, #{regularIndexFlag,jdbcType=VARCHAR}, 
+      #{varName,jdbcType=VARCHAR}, #{indexWeight,jdbcType=DOUBLE}, #{creditFlag,jdbcType=VARCHAR}, 
+      #{state,jdbcType=VARCHAR}, #{elementId,jdbcType=INTEGER}, #{formulaId,jdbcType=INTEGER},
+      #{formulaName,jdbcType=VARCHAR}, #{indexEnName,jdbcType=VARCHAR}, #{indexDescribe,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ccx.index.model.AbsIndex" >
+    insert into abs_index
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="indexCode != null" >
+        index_code,
+      </if>
+      <if test="indexName != null" >
+        index_name,
+      </if>
+      <if test="equalPick != null" >
+        equal_pick,
+      </if>
+      <if test="aveYears != null" >
+        ave_years,
+      </if>
+      <if test="regularIndexFlag != null" >
+        regular_index_flag,
+      </if>
+      <if test="varName != null" >
+        var_name,
+      </if>
+      <if test="indexWeight != null" >
+        index_weight,
+      </if>
+      <if test="creditFlag != null" >
+        credit_flag,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="elementId != null" >
+        element_id,
+      </if>
+      <if test="formulaId != null" >
+        formula_id,
+      </if>
+      <if test="formulaName != null" >
+        formula_name,
+      </if>
+      <if test="indexEnName != null" >
+        index_en_name,
+      </if>
+      <if test="indexDescribe != null" >
+        index_describe,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="indexCode != null" >
+        #{indexCode,jdbcType=VARCHAR},
+      </if>
+      <if test="indexName != null" >
+        #{indexName,jdbcType=VARCHAR},
+      </if>
+      <if test="equalPick != null" >
+        #{equalPick,jdbcType=VARCHAR},
+      </if>
+      <if test="aveYears != null" >
+        #{aveYears,jdbcType=INTEGER},
+      </if>
+      <if test="regularIndexFlag != null" >
+        #{regularIndexFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="varName != null" >
+        #{varName,jdbcType=VARCHAR},
+      </if>
+      <if test="indexWeight != null" >
+        #{indexWeight,jdbcType=DOUBLE},
+      </if>
+      <if test="creditFlag != null" >
+        #{creditFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="elementId != null" >
+        #{elementId,jdbcType=INTEGER},
+      </if>
+      <if test="formulaId != null" >
+        #{formulaId,jdbcType=INTEGER},
+      </if>
+      <if test="formulaName != null" >
+        #{formulaName,jdbcType=VARCHAR},
+      </if>
+      <if test="indexEnName != null" >
+        #{indexEnName,jdbcType=VARCHAR},
+      </if>
+      <if test="indexDescribe != null" >
+        #{indexDescribe,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccx.index.model.AbsIndex" >
+    update abs_index
+    <set >
+      <if test="indexCode != null" >
+        index_code = #{indexCode,jdbcType=VARCHAR},
+      </if>
+      <if test="indexName != null" >
+        index_name = #{indexName,jdbcType=VARCHAR},
+      </if>
+      <if test="equalPick != null" >
+        equal_pick = #{equalPick,jdbcType=VARCHAR},
+      </if>
+      <if test="aveYears != null" >
+        ave_years = #{aveYears,jdbcType=INTEGER},
+      </if>
+      <if test="regularIndexFlag != null" >
+        regular_index_flag = #{regularIndexFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="varName != null" >
+        var_name = #{varName,jdbcType=VARCHAR},
+      </if>
+      <if test="indexWeight != null" >
+        index_weight = #{indexWeight,jdbcType=DOUBLE},
+      </if>
+      <if test="creditFlag != null" >
+        credit_flag = #{creditFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="elementId != null" >
+        element_id = #{elementId,jdbcType=INTEGER},
+      </if>
+      <if test="formulaId != null" >
+        formula_id = #{formulaId,jdbcType=INTEGER},
+      </if>
+      <if test="formulaName != null" >
+        formula_name = #{formulaName,jdbcType=VARCHAR},
+      </if>
+      <if test="indexEnName != null" >
+        index_en_name = #{indexEnName,jdbcType=VARCHAR},
+      </if>
+      <if test="indexDescribe != null" >
+        index_describe = #{indexDescribe,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccx.index.model.AbsIndex" >
+    update abs_index
+    set index_code = #{indexCode,jdbcType=VARCHAR},
+      index_name = #{indexName,jdbcType=VARCHAR},
+      equal_pick = #{equalPick,jdbcType=VARCHAR},
+      ave_years = #{aveYears,jdbcType=INTEGER},
+      regular_index_flag = #{regularIndexFlag,jdbcType=VARCHAR},
+      var_name = #{varName,jdbcType=VARCHAR},
+      index_weight = #{indexWeight,jdbcType=DOUBLE},
+      credit_flag = #{creditFlag,jdbcType=VARCHAR},
+      state = #{state,jdbcType=VARCHAR},
+      element_id = #{elementId,jdbcType=INTEGER},
+      formula_id = #{formulaId,jdbcType=INTEGER},
+      formula_name = #{formulaName,jdbcType=VARCHAR},
+      index_en_name = #{indexEnName,jdbcType=VARCHAR},
+      index_describe = #{indexDescribe,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--通过因素id查指标list-->
+  <select id="getListByElementId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+      from abs_index
+    where element_id = #{0}
+  </select>
+
+  <!--通过因素id删除指标-->
+  <delete id="deleteByElementId" parameterType="java.lang.Integer">
+    delete from abs_index
+    where element_id = #{0}
+  </delete>
+
+  <!--获取带分页list-->
+  <select id="getPageList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+      from abs_index
+    <if test="null != params.eleId">
+      where element_id = #{params.eleId,jdbcType=INTEGER}
+    </if>
+    ORDER BY index_code
+  </select>
+
+  <!--查模型内的指标编号是否重复-->
+  <select id="checkIndexCode" resultType="java.lang.Integer">
+    SELECT COUNT(id) FROM abs_index
+    WHERE element_id IN(  SELECT id FROM abs_model_element WHERE model_id = #{modelId, jdbcType=INTEGER}) AND index_code = #{indexCode, jdbcType=VARCHAR}
+  </select>
+
+ <!-- 通过指标id查rule-->
+  <select id="getRuleListByIndexId" resultMap="RuleResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Rule_Column_List" />
+    from abs_index_rule
+    where index_id = #{indexId, jdbcType=INTEGER} ORDER BY value_min
+  </select>
+
+  <!--通过公式id查指标-->
+  <select id="getByFormulaId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from abs_index
+    where formula_id = #{0}
+  </select>
+
+  <!--查找公式在指标的引用-->
+  <select id="findIndexUsage" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    SELECT id, index_name, ave_years FROM abs_index WHERE formula_id=#{0}
+  </select>
+  
+  <!--查所有定性-->
+	<select id="findNatureIndexByElementIds" resultMap="BaseResultMap" parameterType="java.util.List">
+		select * from abs_index
+		where regular_index_flag = '1' and state = 1 and element_id in
+			<foreach item="ids" collection="list" open="(" separator="," close=")">  
+		 		#{ids,jdbcType=INTEGER}  
+			</foreach>	 
+	</select>
+
+  <!--删除公式同时删除指标中对公式的引用-->
+  <update id="updateFormulaUsage" parameterType="java.lang.Integer">
+    UPDATE abs_index SET formula_id = NULL , formula_name = NULL WHERE formula_id = #{0}
+  </update>
+</mapper>

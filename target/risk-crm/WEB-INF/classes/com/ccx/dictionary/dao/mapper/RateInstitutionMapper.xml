@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.dictionary.dao.RateInstitutionMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.dictionary.model.RateInstitution" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="is_delete_flag" property="deleteFlag" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, code, creator_name, create_time, is_delete_flag
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from rate_institution
+    where is_delete_flag = 0
+    and id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="findByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from rate_institution
+    where is_delete_flag = 0
+    and name = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <!--校验唯一-机构名称-->
+  <select id="findCountByName" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select count(*) from rate_institution
+    where is_delete_flag = 0
+  	  and name = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <!--校验唯一-机构名称-->
+  <select id="findByCode" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select count(*) from rate_institution
+    where is_delete_flag = 0
+  	  and code = #{code,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findAllRateInstitution" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from rate_institution
+    where is_delete_flag = 0
+    order by create_time DESC
+  </select>
+  
+  <!--获取带分页list-->
+  <select id="findAll" parameterType="com.ccx.util.page.Page" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from rate_institution
+    where is_delete_flag = 0
+    order by create_time DESC
+  </select>
+
+  <!--物理删除-->
+  <!--<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from rate_institution
+    where id = #{id,jdbcType=INTEGER}
+  </delete>-->
+
+  <!--逻辑删除-->
+  <update id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    update rate_institution
+  	  set is_delete_flag = 1
+  	  where is_delete_flag = 0
+  	  and id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <insert id="insert" parameterType="com.ccx.dictionary.model.RateInstitution" >
+    insert into rate_institution (id, name, code, creator_name,
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{creatorName,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ccx.dictionary.model.RateInstitution" >
+    insert into rate_institution
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccx.dictionary.model.RateInstitution" >
+    update rate_institution
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorName != null" >
+        creator_name = #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccx.dictionary.model.RateInstitution" >
+    update rate_institution
+    set name = #{name,jdbcType=VARCHAR},
+    code = #{code,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

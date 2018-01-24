@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.reporttype.dao.AbsEnterpriseReportSheetMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.reporttype.model.AbsEnterpriseReportSheet" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="column_id" property="columnId" jdbcType="VARCHAR" />
+    <result column="report_type" property="reportType" jdbcType="INTEGER" />
+    <result column="report_son_no" property="reportSonNo" jdbcType="TINYINT" />
+    <result column="columns_first_name" property="columnsFirstName" jdbcType="VARCHAR" />
+    <result column="sheet_order" property="sheetOrder" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, column_id, report_type, report_son_no, columns_first_name, sheet_order
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from abs_enterprise_report_sheet
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from abs_enterprise_report_sheet
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportSheet" useGeneratedKeys="true" keyProperty="id">
+    insert into abs_enterprise_report_sheet (name, column_id,
+      report_type, report_son_no, columns_first_name, 
+      sheet_order)
+    values (#{name,jdbcType=VARCHAR}, #{columnId,jdbcType=VARCHAR},
+      #{reportType,jdbcType=INTEGER}, #{reportSonNo,jdbcType=TINYINT}, #{columnsFirstName,jdbcType=VARCHAR}, 
+      #{sheetOrder,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportSheet" >
+    insert into abs_enterprise_report_sheet
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="columnId != null" >
+        column_id,
+      </if>
+      <if test="reportType != null" >
+        report_type,
+      </if>
+      <if test="reportSonNo != null" >
+        report_son_no,
+      </if>
+      <if test="columnsFirstName != null" >
+        columns_first_name,
+      </if>
+      <if test="sheetOrder != null" >
+        sheet_order,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="columnId != null" >
+        #{columnId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportType != null" >
+        #{reportType,jdbcType=INTEGER},
+      </if>
+      <if test="reportSonNo != null" >
+        #{reportSonNo,jdbcType=TINYINT},
+      </if>
+      <if test="columnsFirstName != null" >
+        #{columnsFirstName,jdbcType=VARCHAR},
+      </if>
+      <if test="sheetOrder != null" >
+        #{sheetOrder,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportSheet" >
+    update abs_enterprise_report_sheet
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="columnId != null" >
+        column_id = #{columnId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportType != null" >
+        report_type = #{reportType,jdbcType=INTEGER},
+      </if>
+      <if test="reportSonNo != null" >
+        report_son_no = #{reportSonNo,jdbcType=TINYINT},
+      </if>
+      <if test="columnsFirstName != null" >
+        columns_first_name = #{columnsFirstName,jdbcType=VARCHAR},
+      </if>
+      <if test="sheetOrder != null" >
+        sheet_order = #{sheetOrder,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportSheet" >
+    update abs_enterprise_report_sheet
+    set name = #{name,jdbcType=VARCHAR},
+      column_id = #{columnId,jdbcType=VARCHAR},
+      report_type = #{reportType,jdbcType=INTEGER},
+      report_son_no = #{reportSonNo,jdbcType=TINYINT},
+      columns_first_name = #{columnsFirstName,jdbcType=VARCHAR},
+      sheet_order = #{sheetOrder,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

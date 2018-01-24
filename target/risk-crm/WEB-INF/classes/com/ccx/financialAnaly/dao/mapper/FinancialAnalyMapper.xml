@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.financialAnaly.dao.FinancialAnalyMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.financialAnaly.model.FinancialAnalyBean" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="report_type_id" property="reportTypeId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="TINYINT" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="versions" property="versions" jdbcType="TINYINT" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modif_time" property="modifTime" jdbcType="TIMESTAMP" />
+    <result column="reportTypeName" property="reportTypeName" jdbcType="VARCHAR" />
+    <result column="template_name" property="templateName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, report_type_id, name, path, state, is_del,versions, creater, create_time, modifier, modif_time,template_name
+  </sql>
+  
+  	<!-- 获取企业财务分析模板list(分页) -->
+	<select id="getFinancialTemplateList" parameterType="com.ccx.util.page.Page" resultType="com.ccx.financialAnaly.model.FinancialAnalyBean">
+		SELECT
+			aefat.id,
+			aefat.report_type_id reportTypeId,
+			aefat.name,
+			aefat.template_name templateName,
+			aefat.path,
+			aefat.state,
+			aefat.is_del isDel,
+			aefat.versions,
+			aefat.creater,
+			aefat.create_time createTime,
+			aefat.modifier,
+			aefat.modif_time modifTime,
+			aert. NAME reportTypeName
+		FROM
+			abs_enterprise_financial_analy_template aefat
+		LEFT JOIN abs_enterprise_report_type aert ON aefat.report_type_id = aert.id
+		WHERE
+			aefat.is_del = 0
+			and aefat.versions = 0
+		ORDER BY
+			aefat.create_time DESC
+	</select>
+  
+  	<!-- 存储财务模板信息 -->
+	<insert id="saveFinancialTemplate" parameterType="com.ccx.financialAnaly.model.FinancialAnalyBean" >
+	    insert into abs_enterprise_financial_analy_template
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        id,
+	      </if>
+	      <if test="reportTypeId != null" >
+	        report_type_id,
+	      </if>
+	      <if test="name != null" >
+	        name,
+	      </if>
+	      <if test="path != null" >
+	        path,
+	      </if>
+	      <if test="state != null" >
+	        state,
+	      </if>
+	      <if test="isDel != null" >
+	        is_del,
+	      </if>
+	      <if test="versions != null" >
+	        versions,
+	      </if>
+	      <if test="creater != null" >
+	        creater,
+	      </if>
+	      <if test="createTime != null" >
+	        create_time,
+	      </if>
+	      <if test="modifier != null" >
+	        modifier,
+	      </if>
+	      <if test="modifTime != null" >
+	        modif_time,
+	      </if>
+	      <if test="templateName != null" >
+	        template_name,
+	      </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        #{id,jdbcType=BIGINT},
+	      </if>
+	      <if test="reportTypeId != null" >
+	        #{reportTypeId,jdbcType=INTEGER},
+	      </if>
+	      <if test="name != null" >
+	        #{name,jdbcType=VARCHAR},
+	      </if>
+	      <if test="path != null" >
+	        #{path,jdbcType=VARCHAR},
+	      </if>
+	      <if test="state != null" >
+	        #{state,jdbcType=TINYINT},
+	      </if>
+	      <if test="isDel != null" >
+	        #{isDel,jdbcType=TINYINT},
+	      </if>
+	      <if test="versions != null" >
+	        #{versions,jdbcType=TINYINT},
+	      </if>
+	      <if test="creater != null" >
+	        #{creater,jdbcType=VARCHAR},
+	      </if>
+	      <if test="createTime != null" >
+	        #{createTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="modifier != null" >
+	        #{modifier,jdbcType=VARCHAR},
+	      </if>
+	      <if test="modifTime != null" >
+	        #{modifTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="templateName != null" >
+	        #{templateName,jdbcType=VARCHAR},
+	      </if>
+	    </trim>
+	  </insert>
+	  
+	  <!-- 获取报表类型数据 -->
+	<select id="getReportTypeList" resultType="java.util.LinkedHashMap">
+	  select 
+	  	id reportTypeId,
+	  	name reportTypeName,
+	  	creator_name creatorName,
+	  	create_date createDate,
+	  	version,
+	  	last_version_id lastVersionId,
+	  	status
+	  from abs_enterprise_report_type
+	  where 
+	  	status = 0
+	  	AND id NOT IN (
+			SELECT
+				report_type_id
+			FROM
+				abs_enterprise_financial_analy_template
+			WHERE
+				is_del = 0
+				and versions = 0
+		)
+	</select>
+
+	<!-- 根据报表类型id获取报表信息 -->
+	<select id="getReportType" resultType="java.util.Map">
+	  select 
+	  	id reportTypeId,
+	  	name reportTypeName,
+	  	creator_name creatorName,
+	  	create_date createDate,
+	  	version,
+	  	last_version_id lastVersionId,
+	  	status
+	  from abs_enterprise_report_type
+	  where 1=1 and status = 0 and id = #{dataTypeId }
+	</select>
+  
+  	<!-- 更改财务分析状态 启用/禁用/删除 -->
+	<update id="updateFinancialStates" parameterType="com.ccx.financialAnaly.model.FinancialAnalyBean" >
+	  update abs_enterprise_financial_analy_template
+	  <set >
+	    <if test="reportTypeId != null" >
+	      report_type_id = #{reportTypeId,jdbcType=INTEGER},
+	    </if>
+	    <if test="name != null" >
+	      name = #{name,jdbcType=VARCHAR},
+	    </if>
+	    <if test="templateName != null" >
+	      template_name = #{templateName,jdbcType=VARCHAR},
+	    </if>
+	    <if test="path != null" >
+	      path = #{path,jdbcType=VARCHAR},
+	    </if>
+	    <if test="state != null" >
+	      state = #{state,jdbcType=TINYINT},
+	    </if>
+	    <if test="isDel != null" >
+	      is_del = #{isDel,jdbcType=TINYINT},
+	    </if>
+	    <if test="versions != null" >
+	      versions = #{versions,jdbcType=TINYINT},
+	    </if>
+	    <if test="creater != null" >
+	      creater = #{creater,jdbcType=VARCHAR},
+	    </if>
+	    <if test="createTime != null" >
+	      create_time = #{createTime,jdbcType=TIMESTAMP},
+	    </if>
+	    <if test="modifier != null" >
+	      modifier = #{modifier,jdbcType=VARCHAR},
+	    </if>
+	    <if test="modifTime != null" >
+	      modif_time = #{modifTime,jdbcType=TIMESTAMP},
+	    </if>
+	  </set>
+	  where id = #{id,jdbcType=BIGINT}
+	</update>
+	<!-- 根据id获取财务模板信息 -->
+	<select id="getFinancialTemplateById" resultType="com.ccx.financialAnaly.model.FinancialAnalyBean" parameterType="java.lang.Long" >
+	  SELECT
+		aefat.id,
+		aefat.report_type_id reportTypeId,
+		aefat. NAME,
+		aefat.template_name templateName,
+		aefat.path,
+		aefat.state,
+		aefat.is_del isDel,
+		aefat.versions,
+		aefat.creater,
+		aefat.create_time createTime,
+		aefat.modifier,
+		aefat.modif_time modifTime,
+		aert. NAME reportTypeName
+	FROM
+		abs_enterprise_financial_analy_template aefat
+	LEFT JOIN abs_enterprise_report_type aert ON aefat.report_type_id = aert.id
+	WHERE
+		aefat.is_del = 0
+		AND aefat.versions = 0
+		AND aefat.id = #{id,jdbcType=BIGINT}
+	</select>
+  <!-- 根据报表类型查找模板实体 -->
+	<select id="getFinancialTemplateByType" resultMap="BaseResultMap" parameterType="int" >
+	  select 
+	  <include refid="Base_Column_List" />
+	  from abs_enterprise_financial_analy_template
+	  where report_type_id = #{oldType,jdbcType=INTEGER}
+	</select>
+  <!-- 查询报表类型已经被改变的list -->
+	<select id="getAllHistoryTypeTemplate" resultType="com.ccx.financialAnaly.model.FinancialAnalyBean" >
+	  SELECT
+			aefat.id,
+			aefat.report_type_id reportTypeId,
+			aefat.name,
+			aefat.template_name templateName,
+			aefat.path,
+			aefat.state,
+			aefat.is_del isDel,
+			aefat.versions,
+			aefat.creater,
+			aefat.create_time createTime,
+			aefat.modifier,
+			aefat.modif_time modifTime,
+			aert. NAME reportTypeName
+		FROM
+			abs_enterprise_financial_analy_template aefat
+		LEFT JOIN abs_enterprise_report_type aert ON aefat.report_type_id = aert.id
+		WHERE
+			aefat.is_del = 0
+			and aefat.versions = 1
+		ORDER BY
+			aefat.create_time DESC
+	</select>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+</mapper>

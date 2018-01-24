@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.reporttype.dao.AbsEnterpriseReportCloumnsFormulaMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.reporttype.model.AbsEnterpriseReportCloumnsFormula" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="model_id" property="modelId" jdbcType="INTEGER" />
+    <result column="report_type" property="reportType" jdbcType="INTEGER" />
+    <result column="report_son_type" property="reportSonType" jdbcType="INTEGER" />
+    <result column="begin_formula" property="beginFormula" jdbcType="VARCHAR" />
+    <result column="end_formula" property="endFormula" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, model_id, report_type, report_son_type, begin_formula, end_formula
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from abs_enterprise_report_cloumns_formula
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from abs_enterprise_report_cloumns_formula
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportCloumnsFormula" >
+    insert into abs_enterprise_report_cloumns_formula (id, model_id, report_type,
+    report_son_type, begin_formula, end_formula
+    )
+    values (#{id,jdbcType=INTEGER}, #{modelId,jdbcType=INTEGER}, #{reportType,jdbcType=INTEGER},
+    #{reportSonType,jdbcType=INTEGER}, #{beginFormula,jdbcType=VARCHAR}, #{endFormula,jdbcType=VARCHAR}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportCloumnsFormula" >
+    insert into abs_enterprise_report_cloumns_formula
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="modelId != null" >
+        model_id,
+      </if>
+      <if test="reportType != null" >
+        report_type,
+      </if>
+      <if test="reportSonType != null" >
+        report_son_type,
+      </if>
+      <if test="beginFormula != null" >
+        begin_formula,
+      </if>
+      <if test="endFormula != null" >
+        end_formula,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="modelId != null" >
+        #{modelId,jdbcType=INTEGER},
+      </if>
+      <if test="reportType != null" >
+        #{reportType,jdbcType=INTEGER},
+      </if>
+      <if test="reportSonType != null" >
+        #{reportSonType,jdbcType=INTEGER},
+      </if>
+      <if test="beginFormula != null" >
+        #{beginFormula,jdbcType=VARCHAR},
+      </if>
+      <if test="endFormula != null" >
+        #{endFormula,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportCloumnsFormula" >
+    update abs_enterprise_report_cloumns_formula
+    <set >
+      <if test="modelId != null" >
+        model_id = #{modelId,jdbcType=INTEGER},
+      </if>
+      <if test="reportType != null" >
+        report_type = #{reportType,jdbcType=INTEGER},
+      </if>
+      <if test="reportSonType != null" >
+        report_son_type = #{reportSonType,jdbcType=INTEGER},
+      </if>
+      <if test="beginFormula != null" >
+        begin_formula = #{beginFormula,jdbcType=VARCHAR},
+      </if>
+      <if test="endFormula != null" >
+        end_formula = #{endFormula,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccx.reporttype.model.AbsEnterpriseReportCloumnsFormula" >
+    update abs_enterprise_report_cloumns_formula
+    set model_id = #{modelId,jdbcType=INTEGER},
+      report_type = #{reportType,jdbcType=INTEGER},
+      report_son_type = #{reportSonType,jdbcType=INTEGER},
+      begin_formula = #{beginFormula,jdbcType=VARCHAR},
+      end_formula = #{endFormula,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

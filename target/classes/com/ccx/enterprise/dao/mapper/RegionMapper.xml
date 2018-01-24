@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.enterprise.dao.RegionDao" >
+ 	<resultMap id="BaseResultMap" type="com.ccx.enterprise.model.Region">
+ 		<id column="id" property="id" jdbcType="INTEGER" />
+	    <result column="name" property="name" jdbcType="VARCHAR" />
+	    <result column="pid" property="pid" jdbcType="INTEGER" />
+ 	</resultMap>
+ 	
+ 	<resultMap id="ResultMap" type="com.ccx.enterprise.model.RegionList">
+ 		<id column="id" property="id" jdbcType="INTEGER" />
+	    <result column="province" property="province" jdbcType="VARCHAR" />
+	    <result column="city" property="city" jdbcType="VARCHAR" />
+	    <result column="county" property="county" jdbcType="VARCHAR" />
+	    <result column="pid" property="pid" jdbcType="INTEGER" />
+ 	</resultMap>
+ 	
+ 	<select id="findRegionById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select id, name from sys_region where id = #{id,jdbcType=INTEGER}
+	</select>
+	
+	<select id="findAllRegionByPid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select id, name , pid from sys_region where pid = #{pid,jdbcType=INTEGER}
+	</select>
+	
+	<select id="findAllRegion" parameterType="com.ccx.util.page.Page" resultMap="ResultMap">
+		select end.* from (SELECT
+			c.id,
+			(
+				SELECT
+					d.name
+				FROM
+					sys_region d
+				WHERE
+					d.id in 
+					(
+						SELECT
+							e.pid
+						FROM
+							sys_region e	
+							where e.id = c.pid
+					)
+				) province,
+	  		(
+				SELECT
+					f.name
+				FROM
+					sys_region f	
+					where f.id = c.pid
+			) city,
+			c. NAME county,
+			c.pid
+		FROM
+			sys_region c
+		WHERE
+			c.pid IN (
+				SELECT
+					b.id
+				FROM
+					sys_region b
+				WHERE
+					b.pid IN (
+						SELECT
+							a.id
+						FROM
+							sys_region a
+						WHERE
+							a.pid = 0
+					)
+			)) end
+	</select>
+	
+	<insert id="insert" parameterType="com.ccx.enterprise.model.Region">
+	
+	</insert>
+	
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from sys_region where id = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<update id="update" parameterType="com.ccx.enterprise.model.Region">
+	
+	</update>
+	
+</mapper>

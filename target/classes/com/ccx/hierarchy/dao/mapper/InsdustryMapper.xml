@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.hierarchy.dao.InsdustryMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.hierarchy.model.InsdustryBean" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="insdustry_code" property="insdustryCode" jdbcType="VARCHAR" />
+    <result column="insdustry_name" property="insdustryName" jdbcType="VARCHAR" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="matchFirstInsdustryId" property="matchFirstInsdustryId" jdbcType="INTEGER" />
+    <result column="matchFirstInsdustryName" property="matchFirstInsdustryName" jdbcType="VARCHAR" />
+    <result column="matchSecondInsdustryId" property="matchSecondInsdustryId" jdbcType="INTEGER" />
+    <result column="matchSecondInsdustryName" property="matchSecondInsdustryName" jdbcType="VARCHAR" />
+    <result column="checkedFlag" property="checkedFlag" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, insdustry_code, insdustry_name, is_del, creator_name, create_time
+  </sql>
+  
+  <resultMap id="LayerCorrelationindexResultMap" type="com.ccx.hierarchy.model.LayerCorrelationindexBean" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="insdustry_first" property="insdustryFirst" jdbcType="INTEGER" />
+    <result column="insdustry_second" property="insdustrySecond" jdbcType="INTEGER" />
+    <result column="insdustry_first_name" property="insdustryFirstName" jdbcType="VARCHAR" />
+    <result column="insdustry_second_name" property="insdustrySecondName" jdbcType="VARCHAR" />
+    <result column="index_value" property="indexValue" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="LayerCorrelationindex_Column_List" >
+    id, insdustry_first, insdustry_second, insdustry_first_name, insdustry_second_name, 
+    index_value
+  </sql>
+  
+  
+  <!-- 查询资产相关性系数公式  -->
+  <select id="getAssetCorrelationFormula" resultType="java.util.Map" >
+	    SELECT
+			id,
+			param_name paramName,
+			param_value paramValue
+		FROM
+			abs_layer_correlation_setup
+		ORDER BY
+			id
+  </select>
+  	<!-- 查询后台行业列表(分页) -->
+	<select id="findBgInsdustryList" parameterType="com.ccx.util.page.Page" resultType="com.ccx.hierarchy.model.InsdustryBean">
+		SELECT 
+			tab.*
+		FROM
+			( 
+			SELECT
+			ali.id, 
+			ali.insdustry_code insdustryCode, 
+			ali.insdustry_name insdustryName, 
+			ali.is_del isDel, 
+			ali.creator_name creatorName, 
+			ali.create_time createTime,
+			GROUP_CONCAT(alir. NAME) matchSecondInsdustryName
+		FROM
+			abs_layer_insdustry ali
+		LEFT JOIN (
+			SELECT
+				a.insdustry_bg_id,
+				a.insdustry_fg_id,
+				aei.`code`,
+				aei.`name`
+			FROM
+				abs_layer_insdustry_relation a
+			LEFT JOIN abs_enterprise_industry aei ON a.insdustry_fg_id = aei.id
+		) alir ON ali.id = alir.insdustry_bg_id
+		WHERE 
+			ali.is_del = 0
+		GROUP BY
+			ali.insdustry_code
+		ORDER BY
+		  ali.create_time
+			) tab
+	</select>
+  <!-- 通过name查找后台行业list -->
+  <select id="getHierarchyLevelListByName" resultMap="BaseResultMap" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from abs_layer_insdustry 
+	    where 1=1 and is_del=0 and insdustry_name = #{bgInsdustryName,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据后台行业id获取与它关联的前台行业list -->
+	<select id="findMatchInsdustryList" parameterType="java.lang.Integer" resultType="com.ccx.hierarchy.model.InsdustryBean">
+		SELECT
+			alir.id,
+			aaaa.*
+		FROM
+			abs_layer_insdustry_relation alir
+		LEFT JOIN (
+			SELECT
+				a.id matchFirstInsdustryId,
+				a.`NAME` matchFirstInsdustryName,
+				b.id matchSecondInsdustryId,
+				b.`name` matchSecondInsdustryName
+			FROM
+				(
+					SELECT
+						id,
+						NAME
+					FROM
+						abs_enterprise_industry
+					WHERE
+						pid = 0
+				) a
+			LEFT JOIN abs_enterprise_industry b ON a.id = b.pid
+		) aaaa ON alir.insdustry_fg_id = aaaa.matchSecondInsdustryId
+		WHERE
+			alir.insdustry_bg_id = #{id,jdbcType=INTEGER}
+	</select>
+	<!-- 查询后台行业表中已经存在的条数(包含所有状态) -->
+	<select id="findAllBgInsdustryList" resultMap="BaseResultMap" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from abs_layer_insdustry
+  </select>
+  <!-- 新增后台行业 -->
+  <insert id="saveAddBgInsdustry" parameterType="com.ccx.hierarchy.model.InsdustryBean" useGeneratedKeys="true" keyProperty="id">
+    insert into abs_layer_insdustry
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="insdustryCode != null" >
+        insdustry_code,
+      </if>
+      <if test="insdustryName != null" >
+        insdustry_name,
+      </if>
+      <if test="isDel != null" >
+        is_del,
+      </if>
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="insdustryCode != null" >
+        #{insdustryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="insdustryName != null" >
+        #{insdustryName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <!-- 根据id查询后台行业实体 -->
+  <select id="findInsdustryBean" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from abs_layer_insdustry
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 修改后台行业实体 -->
+  <update id="updateBgInsdustry" parameterType="com.ccx.hierarchy.model.InsdustryBean" >
+    update abs_layer_insdustry
+    <set >
+      <if test="insdustryCode != null" >
+        insdustry_code = #{insdustryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="insdustryName != null" >
+        insdustry_name = #{insdustryName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        is_del = #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="creatorName != null" >
+        creator_name = #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 删除所匹配的前台行业 -->
+  <delete id="deleteMatchInsdustry" parameterType="java.lang.Integer" >
+    delete from abs_layer_insdustry_relation
+    where id = #{matchId,jdbcType=INTEGER}
+  </delete>
+  <!-- 查询剩余可以添加的前台行业list -->
+  <select id="selectCanMatchInsdustry" parameterType="com.ccx.util.page.Page" resultType="com.ccx.hierarchy.model.InsdustryBean" >
+    SELECT
+		aa.*
+	FROM
+		(
+			SELECT
+				a.matchFirstInsdustryId,
+				a.matchFirstInsdustryName,
+				b.id matchSecondInsdustryId,
+				b.`name` matchSecondInsdustryName,
+				CASE
+			WHEN b.id IN (
+				SELECT
+					alir.insdustry_fg_id
+				FROM
+					abs_layer_insdustry_relation alir
+				GROUP BY alir.insdustry_fg_id
+			) THEN
+				1
+			ELSE
+				0
+			END checkedFlag
+			FROM
+				abs_enterprise_industry b,
+				(
+					SELECT
+						id AS matchFirstInsdustryId,
+						NAME AS matchFirstInsdustryName
+					FROM
+						abs_enterprise_industry
+					WHERE
+						pid = 0
+				) a
+			WHERE
+				b.pid = a.matchFirstInsdustryId
+		) aa
+  </select>
+  <!-- 保存匹配的前台行业 -->
+  <insert id="addMatchInsdustry" parameterType="java.util.Map" >
+    insert into abs_layer_insdustry_relation (insdustry_bg_id,insdustry_fg_id)   
+    values  
+    <foreach collection="matchSecondInsdustryIdList" item="item" index="index" separator="," >  
+        (#{bgInsdustryId },#{item})  
+    </foreach> 
+  </insert>
+  <!-- 保存资产相关性系数公式设置 -->
+  <update id="updateCorrelationFormula" parameterType="java.util.Map" >
+    update abs_layer_correlation_setup
+    <set >
+      <if test="paramValue != null" >
+        param_value = #{paramValue,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{correlationSetupId,jdbcType=INTEGER}
+  </update>
+  <!-- 查询后台行业list -->
+  <select id="getInsdustryBeanList" resultMap="BaseResultMap">
+    SELECT
+		<include refid="Base_Column_List" />
+	FROM
+		abs_layer_insdustry
+	WHERE
+		1 = 1
+	AND is_del = 0
+	AND id IN (
+		SELECT
+			insdustry_bg_id
+		FROM
+			abs_layer_insdustry_relation
+		GROUP BY
+			insdustry_bg_id
+	)
+  </select>
+  <!-- 根据后台行业id查询行业相关性list -->
+  <select id="getInsdustryCorrelationByIdList" resultType="java.util.LinkedHashMap" parameterType="java.lang.Integer">
+    SELECT
+		insdustry_first insdustryFirst,
+		insdustry_first_name insdustryFirstName,
+		GROUP_CONCAT(id ORDER BY insdustry_second) id,
+		GROUP_CONCAT(insdustry_second ORDER BY insdustry_second) insdustrySecond,
+		GROUP_CONCAT(index_value ORDER BY insdustry_second ) indexValue
+	FROM
+		abs_layer_correlationindex
+	WHERE 
+		insdustry_first = #{insdustryId,jdbcType=INTEGER}
+	GROUP BY
+		insdustry_first
+	ORDER BY
+		insdustry_first
+  </select>
+  <!-- 根据后台行业id查询是否已经有所匹配的前台行业list -->
+  <select id="getInsdustryMatchByIdList" resultType="java.util.LinkedHashMap" parameterType="java.lang.Integer">
+    SELECT
+		id,
+		insdustry_bg_id insdustryId,
+		insdustry_fg_id insdustryFgId
+	FROM
+		abs_layer_insdustry_relation
+	WHERE
+		insdustry_bg_id = #{insdustryId,jdbcType=INTEGER}
+  </select>
+  <!-- 删除行业相关性表数据 -->
+  <delete id="deleteLayerCorrelationindex"  >
+    delete from abs_layer_correlationindex
+  </delete>
+  <!-- 保存行业相关性表数据 -->
+  <insert id="saveLayerCorrelationindex" parameterType="java.util.List" >
+    insert into abs_layer_correlationindex (insdustry_first,insdustry_first_name,insdustry_second,insdustry_second_name,index_value)   
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.insdustryFirst },#{item.insdustryFirstName },#{item.insdustrySecond },#{item.insdustrySecondName },0)  
+    </foreach> 
+  </insert>
+  <!-- 修改行业相关性表数据 -->
+  <update id="updateLayerCorrelationindex" >
+    update abs_layer_correlationindex
+    set insdustry_first_name = #{insdustryName,jdbcType=VARCHAR}
+    where insdustry_first = #{insdustryId,jdbcType=INTEGER};
+    
+    update abs_layer_correlationindex
+    set insdustry_second_name = #{insdustryName,jdbcType=VARCHAR}
+    where insdustry_second = #{insdustryId,jdbcType=INTEGER}
+  </update>
+   <!-- 删除行业相关性表数据 -->
+  <delete id="deleteLayerCorrelationindexById" parameterType="java.lang.Integer" >
+  	DELETE
+	FROM
+		abs_layer_correlationindex
+	WHERE
+		1 = 1
+	AND (
+		insdustry_first = #{insdustryId,jdbcType=INTEGER}
+		OR insdustry_second = #{insdustryId,jdbcType=INTEGER}
+	)
+  </delete>
+   <!-- 删除前后台行业关联-->
+  <delete id="deleteBgInsdustrycorrelation" parameterType="java.lang.Integer" >
+  	DELETE
+		FROM
+			abs_layer_insdustry_relation 
+	WHERE
+		insdustry_bg_id = #{insdustryId,jdbcType=INTEGER}
+  </delete>
+  <!-- 查询后台行业相关性list -->
+  <select id="getInsdustryCorrelationList" resultType="java.util.LinkedHashMap">
+    SELECT
+		insdustry_first insdustryFirst,
+		insdustry_first_name insdustryFirstName,
+		GROUP_CONCAT(id ORDER BY insdustry_second) id,
+		GROUP_CONCAT(insdustry_second ORDER BY insdustry_second) insdustrySecond,
+		GROUP_CONCAT(index_value ORDER BY insdustry_second ) indexValue
+	FROM
+		abs_layer_correlationindex
+	GROUP BY
+		insdustry_first
+	ORDER BY
+		insdustry_first
+  </select>
+  <!-- 修改行业相关性表数据 -->
+  <update id="saveBgInsdustryCorrelation" parameterType="java.util.Map" >
+    update abs_layer_correlationindex
+    <set >
+      <if test="correlationValue != null" >
+        index_value = #{correlationValue,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where 1=1
+    	  AND insdustry_first = #{correlationId1,jdbcType=INTEGER}
+    	  AND insdustry_second = #{correlationId2,jdbcType=INTEGER};
+    	  
+    update abs_layer_correlationindex
+    <set >
+      <if test="correlationValue != null" >
+        index_value = #{correlationValue,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where 1=1
+    	  AND insdustry_first = #{correlationId2,jdbcType=INTEGER}
+    	  AND insdustry_second = #{correlationId1,jdbcType=INTEGER};
+  </update>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</mapper>

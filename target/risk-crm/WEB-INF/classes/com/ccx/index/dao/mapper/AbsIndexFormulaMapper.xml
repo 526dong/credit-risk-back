@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.index.dao.AbsIndexFormulaMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.index.model.AbsIndexFormula" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="formula_id" property="formulaId" jdbcType="VARCHAR" />
+    <result column="formula_name" property="formulaName" jdbcType="VARCHAR" />
+    <result column="formula_content" property="formulaContent" jdbcType="VARCHAR" />
+    <result column="formula_html_content" property="formulaHtmlContent" jdbcType="VARCHAR" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="parent_flag" property="parentFlag" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="year_len" property="yearLen" jdbcType="INTEGER" />
+    <result column="report_type_id" property="reportTypeId" jdbcType="INTEGER" />
+    <collection property="formulaList" select="getListByParentId" column="{parentId=id}" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, formula_id, formula_name, formula_content, formula_html_content, year, parent_id, 
+    parent_flag, creator, create_time, year_len, report_type_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from abs_index_formula
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from abs_index_formula
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ccx.index.model.AbsIndexFormula" useGeneratedKeys="true" keyProperty="id">
+    insert into abs_index_formula (id, formula_id, formula_name, 
+      formula_content, formula_html_content, year, 
+      parent_id, parent_flag, creator, 
+      create_time, year_len, report_type_id, last_version_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{formulaId,jdbcType=VARCHAR}, #{formulaName,jdbcType=VARCHAR}, 
+      #{formulaContent,jdbcType=VARCHAR}, #{formulaHtmlContent,jdbcType=VARCHAR}, #{year,jdbcType=INTEGER}, 
+      #{parentId,jdbcType=INTEGER}, #{parentFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{yearLen,jdbcType=INTEGER}, #{reportTypeId,jdbcType=INTEGER},
+      #{lastVersionId, jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ccx.index.model.AbsIndexFormula">
+    insert into abs_index_formula
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="formulaId != null" >
+        formula_id,
+      </if>
+      <if test="formulaName != null" >
+        formula_name,
+      </if>
+      <if test="formulaContent != null" >
+        formula_content,
+      </if>
+      <if test="formulaHtmlContent != null" >
+        formula_html_content,
+      </if>
+      <if test="year != null" >
+        year,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="parentFlag != null" >
+        parent_flag,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="yearLen != null" >
+        year_len,
+      </if>
+      <if test="reportTypeId != null" >
+        report_type_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="formulaId != null" >
+        #{formulaId,jdbcType=VARCHAR},
+      </if>
+      <if test="formulaName != null" >
+        #{formulaName,jdbcType=VARCHAR},
+      </if>
+      <if test="formulaContent != null" >
+        #{formulaContent,jdbcType=VARCHAR},
+      </if>
+      <if test="formulaHtmlContent != null" >
+        #{formulaHtmlContent,jdbcType=VARCHAR},
+      </if>
+      <if test="year != null" >
+        #{year,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="parentFlag != null" >
+        #{parentFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yearLen != null" >
+        #{yearLen,jdbcType=INTEGER},
+      </if>
+      <if test="reportTypeId != null" >
+        #{reportTypeId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ccx.index.model.AbsIndexFormula" >
+    update abs_index_formula
+    <set >
+      <if test="formulaId != null" >
+        formula_id = #{formulaId,jdbcType=VARCHAR},
+      </if>
+      <if test="formulaName != null" >
+        formula_name = #{formulaName,jdbcType=VARCHAR},
+      </if>
+      <if test="formulaContent != null" >
+        formula_content = #{formulaContent,jdbcType=VARCHAR},
+      </if>
+      <if test="formulaHtmlContent != null" >
+        formula_html_content = #{formulaHtmlContent,jdbcType=VARCHAR},
+      </if>
+      <if test="year != null" >
+        year = #{year,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="parentFlag != null" >
+        parent_flag = #{parentFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yearLen != null" >
+        year_len = #{yearLen,jdbcType=INTEGER},
+      </if>
+      <if test="reportTypeId != null" >
+        report_type_id = #{reportTypeId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ccx.index.model.AbsIndexFormula" >
+    update abs_index_formula
+    set formula_id = #{formulaId,jdbcType=VARCHAR},
+      formula_name = #{formulaName,jdbcType=VARCHAR},
+      formula_content = #{formulaContent,jdbcType=VARCHAR},
+      formula_html_content = #{formulaHtmlContent,jdbcType=VARCHAR},
+      year = #{year,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      parent_flag = #{parentFlag,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      year_len = #{yearLen,jdbcType=INTEGER},
+      report_type_id = #{reportTypeId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--名字模糊查询(不包含list)-->
+  <select id="getByLikeName" resultType="com.ccx.index.model.AbsIndexFormula">
+    select id, formula_name as formulaName, year_len as yearLen
+      from abs_index_formula
+    where parent_flag=1 AND formula_name like #{formulaName, jdbcType=VARCHAR}
+      AND report_type_id = #{reportTypeId, jdbcType=INTEGER} AND current_flag = 1
+  </select>
+
+  <!--获取带分页withoutlist list-->
+  <select id="getPageWithoutFormulaList" parameterType="com.ccx.util.page.Page" resultMap="BaseResultMap">
+    select  id, formula_name as formulaName, formula_content as formulaContent, year, year_len as yearLen
+      from abs_index_formula
+  </select>
+
+  <!--获取带分页list-->
+  <select id="getPageList" parameterType="com.ccx.util.page.Page" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+      from abs_index_formula  where current_flag = 1
+    <if test="null != params.parentFlag">
+      AND parent_flag = #{params.parentFlag,jdbcType=INTEGER}
+    </if>
+    <if test="null != params.name and '' != params.name">
+     AND formula_name like #{params.name,jdbcType=VARCHAR}
+    </if>
+    <if test="-1 != params.reportTypeId">
+      AND report_type_id = #{params.reportTypeId,jdbcType=INTEGER}
+    </if>
+    order by create_time desc
+  </select>
+
+  <!--通过父id查3个公式-->
+  <select id="getListByParentId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from abs_index_formula
+    where parent_id = #{parentId,jdbcType=INTEGER}
+  </select>
+
+  <!--通过名字和年份查询-->
+  <select id="getbyNameAndYear" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from abs_index_formula
+    where formula_name = #{formulaName,jdbcType=VARCHAR} AND year = #{year,jdbcType=INTEGER}
+  </select>
+
+  <!--通过parentId和年份查询-->
+  <select id="getbyParentIdAndYear" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from abs_index_formula
+    where parent_id = #{parentId,jdbcType=INTEGER} AND year = #{year,jdbcType=INTEGER}
+  </select>
+
+  <!--删除子公式-->
+  <delete id="deleteByParentId" parameterType="java.lang.Integer">
+    delete from abs_index_formula
+    where parent_id = #{0} or id = #{0}
+  </delete>
+
+  <!--通过模板id查询公式-->
+  <select id="selectFormulaListByReportType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+      from abs_index_formula
+    where report_type_id = #{0} and current_flag = 1
+  </select>
+
+  <!--过期-->
+  <update id="expireFormula" parameterType="com.ccx.index.model.AbsIndexFormula">
+    UPDATE abs_index_formula set current_flag = 0 where id = #{id, jdbcType=INTEGER}
+  </update>
+
+  <!--批量插入-->
+  <insert id="insertList" parameterType="java.util.List">
+    insert into abs_index_formula (id, formula_id, formula_name,
+    formula_content, formula_html_content, year,
+    parent_id, parent_flag, creator,
+    create_time, year_len,
+    report_type_id, last_version_id
+    )
+    values
+    <foreach collection="list" separator="," item="formula">
+      (#{formula.id,jdbcType=INTEGER}, #{formula.formulaId,jdbcType=VARCHAR}, #{formula.formulaName,jdbcType=VARCHAR},
+      #{formula.formulaContent,jdbcType=VARCHAR}, #{formula.formulaHtmlContent,jdbcType=VARCHAR}, #{formula.year,jdbcType=INTEGER},
+      #{formula.parentId,jdbcType=INTEGER}, #{formula.parentFlag,jdbcType=INTEGER}, #{formula.creator,jdbcType=VARCHAR},
+      #{formula.createTime,jdbcType=TIMESTAMP}, #{formula.yearLen,jdbcType=INTEGER}, #{formula.formula.reportTypeId,jdbcType=INTEGER},
+      #{formula.lastVersionId, jdbcType=INTEGER}
+      )
+    </foreach>
+  </insert>
+</mapper>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.hierarchy.dao.HierarchyMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.hierarchy.model.LayerLevelBean" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="layer_name" property="layerName" jdbcType="VARCHAR" />
+    <result column="security_type" property="securityType" jdbcType="TINYINT" />
+    <result column="capital_rate" property="capitalRate" jdbcType="DECIMAL" />
+    <result column="expect_earnings_rate" property="expectEarningsRate" jdbcType="DECIMAL" />
+    <result column="is_float" property="isFloat" jdbcType="TINYINT" />
+    <result column="layer_order" property="layerOrder" jdbcType="INTEGER" />
+    <result column="float_value" property="floatValue" jdbcType="DECIMAL" />
+    <result column="is_del" property="isDel" jdbcType="TINYINT" />
+    <result column="float_up" property="floatUp" jdbcType="DECIMAL" />
+    <result column="float_down" property="floatDown" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, layer_name, security_type, capital_rate, expect_earnings_rate, is_float, 
+    layer_order, float_value, is_del, float_up, float_down
+  </sql>
+  
+  <!-- 查询分层层级列表(分页) -->
+	<select id="findLevelList" parameterType="com.ccx.util.page.Page" resultType="com.ccx.hierarchy.model.LayerLevelBean">
+		SELECT
+			id,
+			layer_name layerName,
+			security_type securityType,
+			capital_rate capitalRate,
+			expect_earnings_rate expectEarningsRate,
+			is_float isFloat,
+			layer_order layerOrder,
+			float_value floatValue,
+			is_del isDel,
+			float_up floatUp, 
+			float_down floatDown
+		FROM
+			abs_layer_level
+		WHERE
+			is_del = 0
+		ORDER BY
+			layer_order ASC
+	</select>
+	<!-- 根据id查询分层表 -->
+	<select id="selectHierarchyLevelById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from abs_layer_level
+	    where id = #{id,jdbcType=INTEGER}
+	  </select>
+	<!-- 更新分层 -->
+  <update id="updateHierarchyLevel" parameterType="com.ccx.hierarchy.model.LayerLevelBean" >
+    update abs_layer_level
+    <set >
+      <if test="layerName != null" >
+        layer_name = #{layerName,jdbcType=VARCHAR},
+      </if>
+      <if test="securityType != null" >
+        security_type = #{securityType,jdbcType=TINYINT},
+      </if>
+      <if test="capitalRate != null" >
+        capital_rate = #{capitalRate,jdbcType=DECIMAL},
+      </if>
+      <if test="expectEarningsRate != null" >
+        expect_earnings_rate = #{expectEarningsRate,jdbcType=DECIMAL},
+      </if>
+      <if test="isFloat != null" >
+        is_float = #{isFloat,jdbcType=TINYINT},
+      </if>
+      <if test="layerOrder != null" >
+        layer_order = #{layerOrder,jdbcType=INTEGER},
+      </if>
+      <if test="floatValue != null" >
+        float_value = #{floatValue,jdbcType=DECIMAL},
+      </if>
+      <if test="isDel != null" >
+        is_del = #{isDel,jdbcType=TINYINT},
+      </if>
+      <if test="floatUp != null" >
+        float_up = #{floatUp,jdbcType=DECIMAL},
+      </if>
+      <if test="floatDown != null" >
+        float_down = #{floatDown,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 验证层级是否唯一 -->
+  <select id="getHierarchyLevelListByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from abs_layer_level
+    where 1=1
+     AND is_del=0
+     AND layer_name = #{layerName,jdbcType=VARCHAR}
+  </select>
+  <!-- 获取等级list -->
+  <select id="getGradeList" resultType="java.lang.String" >
+    SELECT
+		rating_level
+	FROM
+		abs_layer_defaulrates
+	GROUP BY
+		rating_level
+	ORDER BY
+		id ASC
+  </select>
+  <!-- 获取等级list -->
+  <select id="getLayerDefaulRatesList" resultType="java.util.LinkedHashMap" >
+    SELECT
+		id,
+		rating_level ratingLevel,
+		break_rate breakRate,
+		month
+	FROM
+		abs_layer_defaulrates
+	ORDER BY
+		id ASC
+  </select>
+  <!-- 获取回收率list -->
+  <select id="getLayerRecoveryRatesList" resultType="java.util.LinkedHashMap" >
+    SELECT
+		id,
+		rating_level ratingLevel,
+		recycle_rate recycleRate
+	FROM
+		abs_layer_recoveryrates
+	WHERE
+		rating_level LIKE CONCAT('%',#{param },'%') 
+	ORDER BY
+		id ASC
+  </select>
+  <!-- 保存违约率 -->
+  <update id="saveUpdateDefaulrates" parameterType="java.util.Map" >
+    update abs_layer_defaulrates
+    <set >
+      <if test="breakRate != null" >
+        break_rate = #{breakRate,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{defaulratesId,jdbcType=INTEGER}
+  </update>
+  <!-- 保存回收率 -->
+  <update id="saveUpdateRecoveryrates" parameterType="java.util.Map" >
+    update abs_layer_recoveryrates
+    <set >
+      <if test="recycleRate != null" >
+        recycle_rate = #{recycleRate,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{recoveryId,jdbcType=INTEGER}
+  </update>
+  <!-- 解析Excel中的违约率入库 -->
+  <insert id="anaysisExcelAndSave" parameterType="java.util.List" >
+    insert into abs_layer_defaulrates (rating_level,break_rate,month)   
+    values  
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.ratingLevel },#{item.breakRate},#{item.month })  
+    </foreach> 
+  </insert>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</mapper>

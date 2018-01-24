@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.enterprise.dao.ApprovalDao" >
+	<resultMap id="BaseResultMap" type="com.ccx.enterprise.model.HistoryApproval" >
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="enterprise_id" property="enterpriseId" jdbcType="INTEGER" />
+		<result column="report_ids" property="reportIds" jdbcType="VARCHAR" />
+		<result column="rating_apply_num" property="ratingApplyNum" jdbcType="VARCHAR" />
+		<result column="initiator" property="initiator" jdbcType="VARCHAR" />
+		<result column="initiate_time" property="initiateTime" jdbcType="TIMESTAMP" />
+		<result column="approver" property="approver" jdbcType="VARCHAR" />
+		<result column="approval_time" property="approvalTime" jdbcType="TIMESTAMP" />
+		<result column="approval_status" property="approvalStatus" jdbcType="INTEGER" />
+		<result column="pre_rating_result" property="preRatingResult" jdbcType="VARCHAR" />
+		<result column="rating_result" property="ratingResult" jdbcType="VARCHAR" />
+		<result column="refuse_reason" property="refuseReason" jdbcType="VARCHAR" />
+		<result column="rating_type" property="ratingType" jdbcType="INTEGER" />
+		<result column="company_id" property="companyId" jdbcType="INTEGER" />
+		<result column="act_task_id" property="actTaskId" jdbcType="VARCHAR" />
+		<result column="index_ids" property="indexIds" jdbcType="VARCHAR" />
+		<result column="rule_ids" property="ruleIds" jdbcType="VARCHAR" />
+		<result column="adjust_content" property="adjustContent" jdbcType="VARCHAR" />
+		<result column="adjust_change" property="adjustChange" jdbcType="VARCHAR" />
+		<result column="shadow_rating_result" property="shadowRatingResult" jdbcType="VARCHAR" />
+		<result column="shadow_approval_time" property="shadowApprovalTime" jdbcType="TIMESTAMP" />
+		<result column="enterprise_json" property="enterpriseJson" jdbcType="VARCHAR" />
+		<result column="index_json" property="approvalIndexNameAndValueJson" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+		id, enterprise_id, report_ids, rating_apply_num, initiator, initiate_time, approver,
+		approval_time, approval_status, pre_rating_result, rating_result, refuse_reason,
+		rating_type, company_id, act_task_id, index_ids, rule_ids, adjust_content, adjust_change,
+		shadow_rating_result, shadow_approval_time, enterprise_json, index_json
+	</sql>
+	<!--查询审批记录-->
+	<select id="selectByAppNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List" />
+		FROM abs_enterprise_approval
+		WHERE rating_apply_num = #{0}
+	</select>
+
+	<!--通过id查询评级信息-->
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT <include refid="Base_Column_List" />
+		FROM abs_enterprise_approval
+		WHERE id = #{id,jdbcType=INTEGER}
+	</select>
+</mapper>

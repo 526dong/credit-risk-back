@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.system.dao.AbsRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.ccx.system.model.RoleBg" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="company_id" property="companyId" jdbcType="INTEGER" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, description, status, company_id, creater, create_time
+  </sql>
+  
+	
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from abs_role_bg
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from abs_role_bg
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ccx.system.model.RoleBg" >
+    insert into abs_role_bg (id, name,
+      description, status, company_id, creater,
+      create_time)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},
+      #{description,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{companyId,jdbcType=INTEGER}, 
+      #{creater,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.ccx.system.model.RoleBg" >
+    update abs_role_bg
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      company_id = #{companyId,jdbcType=INTEGER},
+      creater = #{creater,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 删除角色时 ，查看该角色下是否有可用账户，有：不能删除。 无：删除-->
+  <select id="selectUserByRoleId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+	SELECT COUNT(1) FROM (
+		SELECT
+		us.id AS id,
+		us.login_name AS loginName,
+		us.NAME AS name
+		from abs_user_bg us
+		LEFT JOIN abs_user_role_bg ur ON us.id = ur.user_id
+		WHERE 1 = 1 and us.is_del=0 and ur.role_id= #{id,jdbcType=BIGINT}
+		) DATA
+  </select>
+   <!-- 删除角色 -->
+  <update id="deleteRole" parameterType="com.ccx.system.model.RoleBg" >
+    update abs_role_bg
+    <set >
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!-- 保存编辑的角色 -->
+  <update id="saveRoleEdit" parameterType="com.ccx.system.model.RoleBg" >
+    update abs_role_bg
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null" >
+        creater = #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!-- 保存新增的角色 -->
+  <insert id="saveRoleAdd" parameterType="com.ccx.system.model.RoleBg" >
+    insert into abs_role_bg
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+       <if test="status != null" >
+        status,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="creater != null" >
+        creater,
+      </if>
+        create_time,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null" >
+        #{creater,jdbcType=INTEGER},
+      </if>
+        NOW(),
+    </trim>
+  </insert>
+  <!-- 获取所有角色(分页) -->
+  <select id="findAllRole" parameterType="com.ccx.util.page.Page" resultMap="BaseResultMap">
+		select 
+	    <include refid="Base_Column_List" />
+	    from abs_role_bg
+	    where status = 0
+  		order by create_time desc
+	</select>
+	
+	 <!-- 根据角色名称查询角色list -->
+  <select id="getRoleListByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select 
+	    <include refid="Base_Column_List" />
+	    from abs_role_bg
+	    where 1=1 and status = 0 and name = #{roleName,jdbcType=VARCHAR}
+  		order by create_time desc
+	</select>
+	
+  <!-- 获取所有角色的集合 -->
+	<select id="findAllRoleList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from abs_role_bg
+		where status = 0
+	</select>
+	
+  
+  
+  
+</mapper>

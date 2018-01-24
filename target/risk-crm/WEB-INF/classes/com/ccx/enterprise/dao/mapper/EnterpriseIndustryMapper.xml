@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.enterprise.dao.EnterpriseIndustryDao" >
+	<resultMap id="BaseResultMap" type="com.ccx.enterprise.model.EnterpriseIndustry" >
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="pid" property="pid" jdbcType="INTEGER" />
+		<result column="model_id0" property="modelId0" jdbcType="INTEGER" />
+		<result column="model_id1" property="modelId1" jdbcType="INTEGER" />
+		<result column="model_id2" property="modelId2" jdbcType="INTEGER" />
+	</resultMap>
+
+	<!-- 后台系统列表查询 -->
+	<resultMap id="ResultMap" type="com.ccx.enterprise.model.IndustryShow">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="code1" property="code1" jdbcType="VARCHAR" />
+		<result column="name1" property="name1" jdbcType="VARCHAR" />
+		<result column="code2" property="code2" jdbcType="VARCHAR" />
+		<result column="name2" property="name2" jdbcType="VARCHAR" />
+		<result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="pid" property="pid" jdbcType="INTEGER" />
+		<result column="back_name" property="backName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List" >
+		id, code, name, creator_name, create_date, pid, model_id0, model_id1, model_id2
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+		select
+		<include refid="Base_Column_List" />
+		from abs_enterprise_industry
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="findAllIndustryByPid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select id, name, pid from abs_enterprise_industry where pid = #{pid,jdbcType=INTEGER}
+	</select>
+
+	<select id="findAllIndustry" parameterType="com.ccx.util.page.Page" resultMap="ResultMap">
+		select e.* from (SELECT b.id,
+		(
+		SELECT
+		c.CODE
+		FROM
+		abs_enterprise_industry c
+		WHERE
+		c.id = b.pid
+		) code1,
+		(
+		SELECT
+		d.NAME
+		FROM
+		abs_enterprise_industry d
+		WHERE
+		d.id = b.pid
+		) name1,
+		b. CODE code2,
+		b. NAME name2,
+		b.creator_name,
+		b.create_date,
+		b.pid
+		FROM
+		abs_enterprise_industry b
+		WHERE
+		b.pid IN (
+		SELECT
+		a.id
+		FROM
+		abs_enterprise_industry a
+		WHERE
+		a.pid = 0
+		)) e
+		where 1 = 1
+		<if test="null != params.searchContent and '' != params.searchContent" >
+			and e.back_name like concat('%',#{params.searchContent},'%')
+		</if>
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+		delete from abs_enterprise_industry
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.ccx.enterprise.model.EnterpriseIndustry" >
+		insert into abs_enterprise_industry (id, code, name,
+		creator_name, create_date, pid,
+		model_id0, model_id1, model_id2
+		)
+		values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+		#{creatorName,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{pid,jdbcType=INTEGER},
+		#{modelId0,jdbcType=INTEGER}, #{modelId1,jdbcType=INTEGER}, #{modelId2,jdbcType=INTEGER}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.ccx.enterprise.model.EnterpriseIndustry" >
+		insert into abs_enterprise_industry
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+				id,
+			</if>
+			<if test="code != null" >
+				code,
+			</if>
+			<if test="name != null" >
+				name,
+			</if>
+			<if test="creatorName != null" >
+				creator_name,
+			</if>
+			<if test="createDate != null" >
+				create_date,
+			</if>
+			<if test="pid != null" >
+				pid,
+			</if>
+			<if test="modelId0 != null" >
+				model_id0,
+			</if>
+			<if test="modelId1 != null" >
+				model_id1,
+			</if>
+			<if test="modelId2 != null" >
+				model_id2,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="code != null" >
+				#{code,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null" >
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="creatorName != null" >
+				#{creatorName,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null" >
+				#{createDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="pid != null" >
+				#{pid,jdbcType=INTEGER},
+			</if>
+			<if test="modelId0 != null" >
+				#{modelId0,jdbcType=INTEGER},
+			</if>
+			<if test="modelId1 != null" >
+				#{modelId1,jdbcType=INTEGER},
+			</if>
+			<if test="modelId2 != null" >
+				#{modelId2,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ccx.enterprise.model.EnterpriseIndustry" >
+		update abs_enterprise_industry
+		<set >
+			<if test="code != null" >
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null" >
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="creatorName != null" >
+				creator_name = #{creatorName,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null" >
+				create_date = #{createDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="pid != null" >
+				pid = #{pid,jdbcType=INTEGER},
+			</if>
+			<if test="modelId0 != null" >
+				model_id0 = #{modelId0,jdbcType=INTEGER},
+			</if>
+			<if test="modelId1 != null" >
+				model_id1 = #{modelId1,jdbcType=INTEGER},
+			</if>
+			<if test="modelId2 != null" >
+				model_id2 = #{modelId2,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ccx.enterprise.model.EnterpriseIndustry" >
+		update abs_enterprise_industry
+		set code = #{code,jdbcType=VARCHAR},
+		name = #{name,jdbcType=VARCHAR},
+		creator_name = #{creatorName,jdbcType=VARCHAR},
+		create_date = #{createDate,jdbcType=TIMESTAMP},
+		pid = #{pid,jdbcType=INTEGER},
+		model_id0 = #{modelId0,jdbcType=INTEGER},
+		model_id1 = #{modelId1,jdbcType=INTEGER},
+		model_id2 = #{modelId2,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<update id="batchUpdate" parameterType="java.util.List">
+		<foreach collection ="list" item="bean" separator=";">
+			update abs_enterprise_industry
+			set code = #{bean.code,jdbcType=VARCHAR},
+			name = #{bean.name,jdbcType=VARCHAR},
+			creator_name = #{bean.creatorName,jdbcType=VARCHAR},
+			create_date = #{bean.createDate,jdbcType=TIMESTAMP},
+			pid = #{bean.pid,jdbcType=INTEGER}
+			where id = #{bean.id,jdbcType=INTEGER}
+		</foreach>
+	</update>
+
+	<!--分页查看-->
+	<select id="getPageList" resultType="com.ccx.enterprise.model.IndustryShow" parameterType="com.ccx.util.page.Page">
+		SELECT * FROM
+			(SELECT id1, name1, id AS id2, name AS name2, model_id0 AS modelId0, model_id1 AS modelId1 FROM abs_enterprise_industry ind2,
+				(SELECT id AS id1, name AS name1 FROM abs_enterprise_industry WHERE pid=0) ind1 WHERE ind2.pid = ind1.id1
+			<if test="null != params.name and '' != params.name">
+				AND (ind2.name LIKE concat('%', #{params.name, jdbcType=VARCHAR},'%') OR ind1.name1 LIKE concat("%", #{params.name, jdbcType=VARCHAR},'%'))
+			</if>
+			<if test="null != params.reportTypeId">
+				AND ind2.id in (SELECT industry_id FROM abs_enterprise_industry_type WHERE report_type = #{params.reportTypeId, jdbcType=INTEGER} AND status = 0)
+			</if>
+		)a
+	</select>
+
+	<!--通过modelId查二级行业id-->
+	<select id="getListByModelId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		SELECT id from abs_enterprise_industry WHERE
+		model_id0 = #{0} OR model_id1=#{0}
+	</select>
+
+	<!--通过二级行业ids和modelId查一二级行业-->
+	<select id="getOneTwoListByIdsAndModelId" resultType="com.ccx.enterprise.model.IndustryShow">
+		SELECT * FROM (
+						  SELECT name AS name1, id2, name2, type FROM abs_enterprise_industry ind1,
+							  (SELECT id AS id2, pid, name AS name2, 0 AS type FROM abs_enterprise_industry WHERE id IN
+								 <foreach collection="list" item="id" open="(" close=")" separator=",">
+									 #{id, jdbcType=INTEGER}
+								 </foreach>
+						  		AND model_id0=#{modelId, jdbcType=INTEGER}) ind2 WHERE ind2.pid = ind1.id
+						  UNION
+						  SELECT name AS name1, id2, name2,type FROM abs_enterprise_industry ind1,
+							  (SELECT id AS id2, pid, name AS name2, 1 AS type FROM abs_enterprise_industry WHERE id IN
+								<foreach collection="list" item="id" open="(" close=")" separator=",">
+									#{id, jdbcType=INTEGER}
+								</foreach>
+								AND model_id1=#{modelId, jdbcType=INTEGER}) ind2 WHERE ind2.pid = ind1.id
+					  ) a GROUP BY a.name1, a.name2, a.type
+	</select>
+
+	<!--通过modelid和企业性质查二级行业名称-->
+	<select id="getListByModelIdAndType" resultMap="BaseResultMap">
+		SELECT name, model_id0, model_id1 from abs_enterprise_industry WHERE
+			<if test="0 == type">
+				model_id0 = #{modelId, jdbcType=INTEGER}
+			</if>
+			<if test="1 == type">
+				model_id1 = #{modelId, jdbcType=INTEGER}
+			</if>
+	</select>
+
+	<!--通过企业id和企业规模查评分卡id-->
+	<select id="getModelIdByIdAndEntType" resultType="java.lang.Integer">
+		<if test="0 == entType">
+			SELECT model_id0
+		</if>
+		<if test="1 == entType">
+			SELECT model_id1
+		</if>
+		FROM abs_enterprise_industry WHERE id=#{industry2Id, jdbcType=INTEGER}
+
+	</select>
+
+	<!--更新模型和行业关联-->
+	<update id="updateModelIdByType">
+		UPDATE abs_enterprise_industry SET
+		<if test="0 == type">
+			model_id0 = #{newModelId, jdbcType=INTEGER}  WHERE model_id0 = #{modelId, jdbcType=INTEGER}
+		</if>
+		<if test="1 == type">
+			model_id1 = #{newModelId, jdbcType=INTEGER} WHERE model_id1 = #{modelId, jdbcType=INTEGER}
+		</if>
+	</update>
+
+	<!--删除模型和行业关联-->
+	<update id="deleteModelRe0" parameterType="java.lang.Integer">
+		UPDATE abs_enterprise_industry SET model_id0 = NULL WHERE model_id0 = #{0}
+	</update>
+
+	<update id="deleteModelRe1" parameterType="java.lang.Integer">
+		UPDATE abs_enterprise_industry SET model_id0 = NULL WHERE model_id0 = #{0};
+	</update>
+</mapper>

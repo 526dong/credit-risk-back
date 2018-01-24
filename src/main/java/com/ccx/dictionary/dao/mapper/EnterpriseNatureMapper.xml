@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ccx.dictionary.dao.EnterpriseNatureDao" >
+ 	<resultMap id="BaseResultMap" type="com.ccx.dictionary.model.EnterpriseNature">
+ 		<id column="id" property="id" jdbcType="INTEGER" />
+	    <result column="name" property="name" jdbcType="VARCHAR" />
+	    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    	<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    	<result column="is_delete_flag" property="deleteFlag" jdbcType="TIMESTAMP" />
+ 	</resultMap>
+  
+  <insert id="insert">
+  	insert into abs_enterprise_nature (name, creator_name, create_date)
+  		values (#{name,jdbcType=VARCHAR},#{creatorName,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+
+	<!--物理删除-->
+  <!--<delete id="deleteById">
+  	delete from abs_enterprise_nature where id = #{id,jdbcType=INTEGER}
+  </delete>-->
+
+	<!--逻辑删除-->
+	<update id="deleteById" parameterType="java.lang.Integer">
+		update abs_enterprise_nature
+  		set is_delete_flag = 1
+  		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+  
+  <update id="update" parameterType="com.ccx.dictionary.model.EnterpriseNature">
+  	update abs_enterprise_nature
+  	set name = #{name,jdbcType=VARCHAR}
+  	where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select
+  		id, name, creator_name, create_date
+  	from abs_enterprise_nature
+  		where is_delete_flag = 0
+  		and id = #{id,jdbcType=INTEGER}
+  </select>
+
+	<!--校验唯一-企业名称-->
+	<select id="findByName" resultType="java.lang.Integer" parameterType="java.lang.String" >
+		select count(*) from abs_enterprise_nature
+		where is_delete_flag = 0
+  		and name = #{name,jdbcType=VARCHAR}
+	</select>
+  
+  <select id="findAll" parameterType="com.ccx.util.page.Page" resultMap="BaseResultMap">
+  	select id, name, creator_name, create_date
+  	from abs_enterprise_nature
+  	where is_delete_flag = 0
+  	order by create_date DESC
+  </select>
+  
+  <select id="findAllNature" resultMap="BaseResultMap">
+  	select id, name, creator_name, create_date
+  	from abs_enterprise_nature
+  	where is_delete_flag = 0
+  	order by id
+  </select>
+</mapper>
